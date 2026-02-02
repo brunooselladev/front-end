@@ -1,0 +1,14 @@
+<div class="side-menu" [class.side-menu--open]="isOpen">
+  <div class="side-menu__overlay" (click)="close()" *ngIf="isOpen"></div>
+  <div class="side-menu__container">
+    <div class="side-menu__header">
+      <h2 class="side-menu__header__title">{{ title }}</h2>
+      <button class="side-menu__header__close" (click)="close()">
+        <span class="side-menu__header__close__icon">×</span>
+      </button>
+    </div>
+    <div class="side-menu__content">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

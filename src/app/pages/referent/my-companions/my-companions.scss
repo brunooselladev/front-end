@@ -1,0 +1,8 @@
+@use '../../../../styles/variables' as *;
+
+.page-main{
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-lg;
+    min-height: 70vh; // Altura mínima para evitar que el layout salte
+}

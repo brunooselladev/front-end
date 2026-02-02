@@ -1,0 +1,133 @@
+<!-- Main container with gradient background -->
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50 to-indigo-50 flex items-center justify-center p-4 relative overflow-hidden">
+
+  <!-- Background decorative elements -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+    <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse animation-delay-2000"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-100 rounded-full mix-blend-multiply filter blur-2xl opacity-30"></div>
+  </div>
+
+  <div class="absolute top-2 right-4 z-20 hidden md:block content-img">
+    <img src="assets/logo-arguello.png" alt="Logo Arguello" class="w-60 h-60 opacity-80">
+  </div>
+
+  <!-- Main content container -->
+  <div class="relative z-10 w-full max-w-lg md:max-w-4xl mx-auto">
+
+    <!-- App branding -->
+    <div class="text-center mb-6">
+      <h1 class="text-5xl font-black bg-gradient-to-r from-blue-600 via-emerald-600 to-indigo-600 bg-clip-text text-transparent mb-2 tracking-tight">
+        MappA
+      </h1>
+      <div class="w-16 h-1 bg-gradient-to-r from-blue-500 via-emerald-500 to-indigo-500 rounded-full mx-auto mb-1"></div>
+      <p class="text-xs text-gray-600 font-medium tracking-wide uppercase">
+        Red Comunitaria
+      </p>
+    </div>
+
+
+    <!-- Form container -->
+    <div class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-5 relative overflow-hidden">
+
+      <!-- Subtle inner glow -->
+      <div class="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-emerald-50/20 to-indigo-50/30 rounded-2xl"></div>
+
+      <!-- Content -->
+      <div class="relative z-10">
+        <div class="mb-3 flex justify-center">
+        <button class="flex items-center text-gray-500 hover:text-gray-700 text-sm">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          <a routerLink="/registro/ofrezco-ayuda" class="text-gray-600 hover:text-gray-800 text-sm font-medium transition-colors duration-200 ">
+            Volver
+          </a>
+        </button>
+      </div>
+
+        <!-- Form title inside card -->
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3 leading-tight">
+            Registro - Referente afectivo
+          </h2>
+        </div>
+
+        <!-- Form -->
+        <form [formGroup]="form" class="">
+
+          <!-- Two column grid for inputs -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+              <app-input label="Nombre" name="nombre" placeholder="Nombre y apellido" [control]="nombre">
+              </app-input>
+
+              <app-input label="Email" name="email" type="email" placeholder="usuario@gmail.com" [control]="email">
+              </app-input>
+
+              <app-input label="Teléfono" name="telefono" type="text" [allowOnlyNumbersAndPlus]="true" placeholder="Ingrese su número de teléfono" [control]="telefono">
+              </app-input>
+
+              <app-input label="Contraseña" name="password" type="password" placeholder="8-16, mayúscula, minúscula y número" [control]="password">
+              </app-input>
+
+              <div class="space-y-2">
+                <app-input label="Repetir contraseña" name="repeatPassword" type="password" placeholder="Repite tu contraseña" [control]="repeatPassword">
+                </app-input>
+
+                @if (form.touched && form.errors?.['passwordsMismatch']) {
+                  <div class="text-red-500 text-sm font-medium">
+                    Las contraseñas no coinciden
+                  </div>
+                }
+              </div>
+
+          </div>
+
+          <!-- Submit button -->
+          <div class="pt-4 flex justify-end">
+            <app-button
+              text="Registrarme"
+              [disabled]="form.invalid || isLoading"
+              (clicked)="onSubmit()"
+              class="w-auto">
+            </app-button>
+          </div>
+
+          <!-- Login link -->
+          <div class="flex justify-center items-center mt-6 px-3 flex-col md:flex-row">
+            <p class="text-sm text-gray-600 mt-2 md:mt-0">
+              ¿Ya tienes cuenta?
+              <a routerLink="/login"
+                 class="text-blue-600 hover:text-blue-700 font-semibold transition-colors duration-200 hover:underline ml-1">
+                Iniciar sesión
+              </a>
+            </p>
+          </div>
+
+        </form>
+
+      </div>
+      <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+
+    </div>
+    <div class="text-center mt-6">
+      <p class="text-xs text-gray-500">
+        Conectando comunidades • Construyendo futuro
+      </p>
+    </div>
+
+    <!-- Loading Overlay -->
+    @if (isLoading) {
+      <div class="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-white rounded-xl p-6 shadow-xl flex flex-col items-center space-y-4">
+          <div class="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <p class="text-gray-700 font-medium">Registrando referente afectivo...</p>
+        </div>
+      </div>
+    }
+
+  </div>
+
+</div>

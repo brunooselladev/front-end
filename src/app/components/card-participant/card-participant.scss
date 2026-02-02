@@ -1,0 +1,78 @@
+@import '../../../styles/variables.scss';
+
+.participant-card {
+  font-family: $font-family-base;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  // Responsive design
+  @media (max-width: 768px) {
+    padding: 1rem;
+
+    .flex.items-center.justify-between {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+    }
+
+    // Ajustar el contenedor de información del participante
+    .flex.items-center.flex-1.min-w-0 {
+      width: 100%;
+    }
+
+    // Ajustar el avatar para que no se mueva
+    .flex-shrink-0.mr-4 {
+      margin-right: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    // Ajustar el estado de asistencia para mobile
+    .ml-4.flex-shrink-0 {
+      margin-left: 0;
+      margin-top: 0.5rem;
+      align-self: flex-start;
+    }
+
+    // Ajustar el contenedor de datos para mobile
+    .flex-1.min-w-0 {
+      width: 100%;
+    }
+
+    // Cambiar la dirección del flex en datos para mobile
+    .flex.items-center.justify-between {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    // Ajustar el contenedor de acciones para mobile (solo el botón de menú)
+    .flex.items-center.ml-4 {
+      position: absolute;
+      top: 50%;
+      right: 1rem;
+      margin-left: 0;
+      margin-top: 0;
+    }
+
+    // Ajustar el contenedor principal para dar espacio al botón
+    .flex.items-center.justify-between {
+      position: relative;
+      padding-right: 3rem; // Espacio para el botón
+    }
+  }
+
+  // Ajustes adicionales para tablets
+  @media (max-width: 1024px) and (min-width: 769px) {
+    .flex.items-center.space-x-2 {
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: stretch;
+    }
+
+    .flex.items-center.space-x-2 button {
+      width: 100%;
+    }
+  }
+}

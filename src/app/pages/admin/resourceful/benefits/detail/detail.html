@@ -1,0 +1,119 @@
+<div class="app-page">
+  <app-navbar></app-navbar>
+
+  <div class="app-page__body">
+    <app-sidebar></app-sidebar>
+
+    <div class="app-page__content">
+      <div class="page-header">
+        <div class="page-header__content">
+          <app-back-button [isBackButton]="true"></app-back-button>
+          <h1 class="page-header__title">Detalle de la prestación</h1>
+        </div>
+      </div>
+
+      <div class="page-main">
+        <div class="detail-container">
+          <!-- Loading state -->
+          @if (isLoading) {
+            <app-loading-overlay
+              [fullscreen]="false"
+              message="Cargando detalles..."
+              size="lg">
+            </app-loading-overlay>
+          }
+
+          <!-- Error state -->
+          @if (!isLoading && error) {
+            <div class="error-container">
+              <div class="error-content">
+                <div class="error-icon">⚠️</div>
+                <h2 class="error-title">Error</h2>
+                <p class="error-message">{{ error }}</p>
+                <button class="error-button" (click)="goBack()">Volver al listado</button>
+              </div>
+            </div>
+          }
+
+          <!-- Actividad details -->
+          @if (!isLoading && !error && actividad) {
+            <div class="espacio-detail">
+              <!-- Header section -->
+              <div class="espacio-header">
+                <div class="espacio-header__icon">
+                  {{ getTipoActividadIcon(actividad.esFija) }}
+                </div>
+                <div class="espacio-header__content">
+                  <h2 class="espacio-header__title">{{ actividad.nombre }}</h2>
+                  <p class="espacio-header__subtitle">{{ getTipoActividadLabel(actividad.esFija) }}</p>
+                </div>
+              </div>
+
+              <!-- Details grid -->
+              <div class="espacio-details-grid">
+                <!-- Información de la actividad -->
+                <div class="detail-card">
+                  <div class="detail-card__header">
+                    <span class="detail-card__header__icon">📋</span>
+                    <h3 class="detail-card__header__title">Información de la Actividad</h3>
+                  </div>
+                  <div class="detail-card__content">
+                    <div class="detail-item">
+                      <span class="detail-item__label">
+                        <span class="detail-item__label__icon">📅</span>
+                        Fecha:
+                      </span>
+                      <span class="detail-item__value">{{ getFechaFormateada(actividad.dia) }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-item__label">
+                        <span class="detail-item__label__icon">🕒</span>
+                        Horario:
+                      </span>
+                      <span class="detail-item__value">{{ actividad.hora }}{{ actividad.horaFin ? ' - ' + actividad.horaFin : '' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-item__label">
+                        <span class="detail-item__label__icon">🏢</span>
+                        Espacio:
+                      </span>
+                      <span class="detail-item__value">{{ espacio?.nombre || 'Cargando...' }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="detail-card">
+                  <div class="detail-card__header">
+                    <span class="detail-card__header__icon">📍</span>
+                    <h3 class="detail-card__header__title">Ubicación</h3>
+                  </div>
+                  <div class="detail-card__content">
+                    <div class="detail-item">
+                      <span class="detail-item__label">
+                        <span class="detail-item__label__icon">🏠</span>
+                        Lugar:
+                      </span>
+                      <span class="detail-item__value">{{ actividad.lugar }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Descripción de la actividad -->
+                <div class="detail-card detail-card--full-width">
+                  <div class="detail-card__header">
+                    <span class="detail-card__header__icon">📝</span>
+                    <h3 class="detail-card__header__title">Descripción de la Actividad</h3>
+                  </div>
+                  <div class="detail-card__content">
+                    <p class="detail-description">{{ actividad.descripcion }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

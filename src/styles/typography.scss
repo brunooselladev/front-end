@@ -1,0 +1,27 @@
+// Ejemplo de estilos globales para títulos y textos
+@use './variables' as *;
+
+h1, .title-main {
+  font-family: $title-font-family;
+  font-weight: $title-font-weight;
+  font-size: $title-font-size;
+  color: $text-color;
+  @media (max-width: 650px){
+    font-size: $title-font-size-mobile;
+  }
+}
+
+.label, .text-grey {
+  color: $grey-color-text;
+  font-family: $font-family-base;
+}
+
+body {
+  font-family: $font-family-base;
+  color: $text-color;
+  background: $background-primary;
+  font-size: $font-size;
+  @media (max-width: 650px){
+    font-size: $font-size-mobile;
+  }
+}

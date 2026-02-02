@@ -1,0 +1,41 @@
+<div class="app-page">
+  <app-navbar></app-navbar>
+
+  <div class="app-page__body">
+    <app-sidebar></app-sidebar>
+
+    <div class="app-page__content">
+      <div class="page-header">
+        <h1 class="page-header__title">Mi Perfil</h1>
+      </div>
+
+      <main class="page-main">
+        <!-- Tabs de navegación -->
+        <app-notification-tabs
+          [tabs]="tabs"
+          [activeTab]="activeTab"
+          [showCount]="false"
+          [showSummary]="false"
+          (tabChange)="onTabChange($event)">
+        </app-notification-tabs>
+
+        <!-- Contenido según tab activo -->
+        @if (activeTab === 'datos') {
+          <div class="w-full">
+            <app-form-personal-data
+            [userData]="userData"
+            (save)="onSaveProfile($event)"
+            (cancel)="onCancelEdit()">
+          </app-form-personal-data>
+          </div>
+        }
+
+        @if (activeTab === 'resumen') {
+          <div class="profile-container w-full md:w-4/5 mx-auto">
+            <app-form-summary [isUsmya]="true"></app-form-summary>
+          </div>
+        }
+      </main>
+    </div>
+  </div>
+</div>

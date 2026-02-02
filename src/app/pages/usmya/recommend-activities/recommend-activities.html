@@ -1,0 +1,87 @@
+<div class="md:px-10 md:py-6">
+  <!-- Header -->
+  <div class="recommend-activities__header" *ngIf="!isLoading && !error">
+    <p class="text-sm md:text-xl font-semibold text-gray-800">
+      Selecciona las actividades que le interesen al usmya (opcional)
+    </p>
+
+    <!-- Contador de seleccionadas -->
+    <div class="recommend-activities__counter" *ngIf="getSelectedCount() > 0">
+      <span class="recommend-activities__counter-text">
+        {{ getSelectedCount() }} actividad{{ getSelectedCount() !== 1 ? 'es' : '' }} seleccionada{{ getSelectedCount() !== 1 ? 's' : '' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Grid de actividades -->
+  <div class="recommend-activities__grid" *ngIf="!isLoading && !error">
+    <app-card-activities
+      *ngFor="let actividad of actividades"
+      [actividad]="actividad"
+      [isSelected]="isActivitySelected(actividad)"
+      [showCheckbox]="true"
+      (selectionChange)="onActivitySelection($event)"
+      class="recommend-activities__card">
+    </app-card-activities>
+  </div>
+
+  <!-- Loading State -->
+  <app-loading-overlay
+    *ngIf="isLoading"
+    [fullscreen]="false"
+    message="Cargando actividades..."
+    size="lg">
+  </app-loading-overlay>
+
+  <!-- Error State -->
+  <div class="recommend-activities__error" *ngIf="error && !isLoading">
+    <div class="recommend-activities__error-icon">⚠️</div>
+    <h3 class="recommend-activities__error-title">Error al cargar actividades</h3>
+    <p class="recommend-activities__error-text">{{ error }}</p>
+    <button
+      class="recommend-activities__error-button"
+      (click)="loadActivities()">
+      Intentar de nuevo
+    </button>
+  </div>
+
+  <!-- Mensaje cuando no hay actividades -->
+  <!-- <div class="recommend-activities__empty" *ngIf="actividades.length === 0">
+    <div class="recommend-activities__empty-icon">📅</div>
+    <h3 class="recommend-activities__empty-title">No hay actividades disponibles</h3>
+    <p class="recommend-activities__empty-text">
+      En este momento no tenemos actividades recomendadas. ¡Vuelve pronto!
+    </p>
+  </div> -->
+
+  <!-- Acciones -->
+  <ng-container *ngIf="isAgentRegistration">
+    <!-- Botones para modo agente -->
+    <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200">
+      <app-button
+        class="w-full sm:w-auto"
+        label="Volver"
+        variant="outline"
+        (clicked)="onGoBack()">
+      </app-button>
+      <app-button
+        class="w-full sm:w-auto"
+        label="Registrar paciente"
+        variant="primary"
+        (clicked)="onRegisterPatient()">
+      </app-button>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!isAgentRegistration && !isLoading && !error">
+    <!-- Botones para modo agente -->
+    <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200">
+      <app-button
+        class="w-full sm:w-auto"
+        label="Guardar actividades"
+        variant="primary"
+        (clicked)="showSaveActivitiesAlert()">
+      </app-button>
+    </div>
+  </ng-container>
+
+</div>

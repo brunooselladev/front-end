@@ -1,0 +1,42 @@
+<div class="app-page">
+  <app-navbar></app-navbar>
+  
+  <div class="app-page__body">
+    <app-sidebar></app-sidebar>
+    
+    <div class="app-page__content">
+      <div class="page-header">
+        <h1 class="page-header__title">Mis acompañados</h1>
+        <app-button
+          label="Nuevo acompañado"
+          variant="primary"
+          size="medium"
+          (clicked)="onAddCompanion()">
+        </app-button>
+      </div>
+      
+      <div class="page-main">
+        @if (isLoading) {
+          <app-loading-overlay
+            [fullscreen]="false"
+            message="Cargando acompañados..."
+            size="lg">
+          </app-loading-overlay>
+        } @else {
+          <app-table
+            [columns]="columns"
+            [data]="usmyaData"
+            [filters]="filters"
+            [customActions]="customActions"
+            [showDefaultActions]="false"
+            [itemsPerPage]="10"
+            (onCustomAction)="onCustomAction($event)"
+            (onFilterChange)="onTableFilterChange($event)">
+          </app-table>
+        }
+      </div>
+    </div>
+  </div>
+
+</div>
+

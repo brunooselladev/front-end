@@ -1,0 +1,11 @@
+<div class="breadcrumb">
+  <div
+    *ngFor="let item of items; let i = index; let last = last"
+    class="breadcrumb-item"
+    [class.active]="item.active"
+    [class.clickable]="!last && item.route"
+    (click)="!last && item.route && navigateTo(item)">
+    <span class="breadcrumb-text">{{ item.label }}</span>
+    <span *ngIf="!last" class="breadcrumb-separator">›</span>
+  </div>
+</div>

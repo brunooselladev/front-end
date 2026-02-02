@@ -1,0 +1,88 @@
+<div class="activity-details" *ngIf="activity">
+  <!-- Header con título y acciones -->
+  <div class="activity-details__header">
+    <div class="activity-details__header__content">
+      <h1 class="activity-details__title">{{ activity.nombre }}</h1>
+      <div class="activity-details__badge" [class.activity-details__badge--fixed]="activity.esFija">
+        <span class="activity-details__badge__icon">📌</span>
+        <span class="activity-details__badge__text">{{ isFixedText }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="activity-details__content">
+
+    <!-- Información básica -->
+    <div class="activity-details__section">
+      <h2 class="activity-details__section-title">
+        <span class="activity-details__section-icon">📝</span>
+        Información Básica
+      </h2>
+      <div class="activity-details__info-grid">
+        <div class="activity-details__info-item">
+          <label class="activity-details__info-label">Descripción</label>
+          <p class="activity-details__info-value activity-details__info-value--description">
+            {{ activity.descripcion }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fecha y Horario -->
+    <div class="activity-details__section">
+      <h2 class="activity-details__section-title">
+        <span class="activity-details__section-icon">📅</span>
+        Fecha y Horario
+      </h2>
+      <div class="activity-details__info-grid">
+        <div class="activity-details__info-item">
+          <label class="activity-details__info-label">Fecha</label>
+          <p class="activity-details__info-value">
+            <span class="activity-details__info-icon">📅</span>
+            {{ formattedDate }}
+          </p>
+        </div>
+        <div class="activity-details__info-item">
+          <label class="activity-details__info-label">Horario</label>
+          <p class="activity-details__info-value">
+            <span class="activity-details__info-icon">🕐</span>
+            {{ formattedTime }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ubicación y Organización -->
+    <div class="activity-details__section">
+      <h2 class="activity-details__section-title">
+        <span class="activity-details__section-icon">📍</span>
+        Ubicación y Organización
+      </h2>
+      <div class="activity-details__info-grid">
+        <div class="activity-details__info-item">
+          <label class="activity-details__info-label">Lugar</label>
+          <p class="activity-details__info-value">
+            <span class="activity-details__info-icon">📍</span>
+            {{ activity.lugar }}
+          </p>
+        </div>
+        <div class="activity-details__info-item">
+          <label class="activity-details__info-label">Espacio</label>
+          <p class="activity-details__info-value">
+            <span class="activity-details__info-icon">🏢</span>
+            {{ espacioName }}
+          </p>
+        </div>
+        <div class="activity-details__info-item">
+          <label class="activity-details__info-label">Responsable</label>
+          <p class="activity-details__info-value">
+            <span class="activity-details__info-icon">👤</span>
+            {{ activity.responsable }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

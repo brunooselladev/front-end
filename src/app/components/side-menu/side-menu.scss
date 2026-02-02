@@ -1,0 +1,142 @@
+@use '../../../styles/variables' as *;
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.3s, opacity 0.3s;
+
+  &--open {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  &__container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 400px;
+    max-width: 100vw;
+    background-color: #fff;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+
+    .side-menu--open & {
+      transform: translateX(0);
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #f8f9fa;
+
+    &__title {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    &__close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      &__icon {
+        font-size: 24px;
+        font-weight: bold;
+        color: #666;
+        line-height: 1;
+      }
+    }
+  }
+
+  &__content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  // Mobile styles
+  @media (max-width: 650px) {
+    &__container {
+      top: auto;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 70vh;
+      max-height: 500px;
+      border-radius: 16px 16px 0 0;
+      transform: translateY(100%);
+
+      .side-menu--open & {
+        transform: translateY(0);
+      }
+    }
+
+    &__header {
+      position: relative;
+      padding: 16px 20px;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 4px;
+        background-color: #ddd;
+        border-radius: 2px;
+      }
+
+      &__title {
+        font-size: 1.1rem;
+        text-align: center;
+        flex: 1;
+      }
+
+      &__close {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+
+    &__content {
+      padding: 16px 20px 20px;
+    }
+  }
+}

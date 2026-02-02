@@ -1,0 +1,247 @@
+<div class="w-full">
+  
+
+  @if (loading) {
+    <app-loading-overlay
+      message="Cargando trayectoria..."
+      [fullscreen]="false"
+      size="md">
+    </app-loading-overlay>
+  } @else if (timelineItems.length === 0) {
+    <div class="text-center py-12">
+      <div class="text-6xl mb-4">📋</div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2" style="font-family: 'Poppins', sans-serif;">Sin trayectoria registrada</h3>
+      <p class="text-gray-600" style="font-family: 'Poppins', sans-serif;">No hay asistencias ni observaciones registradas para este paciente.</p>
+    </div>
+  } @else {
+    <div class="relative">
+      <div class="mb-8">
+    <div class="flex justify-between items-center">
+      <p class="text-lg text-gray-600" style="font-family: 'Poppins', sans-serif;">Historial de asistencias y observaciones</p>
+      @if (canAddObservaciones) {
+        <app-button
+          text="Agregar Observación"
+          variant="primary"
+          size="small"
+          (clicked)="openNuevaObservacionModal()">
+        </app-button>
+      }
+    </div>
+  </div>
+
+      <!-- Leyenda de iconos -->
+      <div class="mb-8 bg-gray-50 rounded-lg p-4 border border-gray-200">
+        <h4 class="text-sm font-semibold text-gray-800 mb-3" style="font-family: 'Poppins', sans-serif;">Significado de los iconos:</h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Asistencia presente -->
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-green-500 border-4 border-white shadow-sm flex items-center justify-center">
+              <span class="text-white font-bold text-sm">✓</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-900" style="font-family: 'Poppins', sans-serif;">Asistencia presente</p>
+              <p class="text-xs text-gray-600" style="font-family: 'Poppins', sans-serif;">El paciente asistió a la actividad programada</p>
+            </div>
+          </div>
+
+          <!-- Asistencia ausente -->
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-red-500 border-4 border-white shadow-sm flex items-center justify-center">
+              <span class="text-white font-bold text-sm">✗</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-900" style="font-family: 'Poppins', sans-serif;">Asistencia ausente</p>
+              <p class="text-xs text-gray-600" style="font-family: 'Poppins', sans-serif;">El paciente no asistió a la actividad programada</p>
+            </div>
+          </div>
+
+          <!-- Observación -->
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-blue-500 border-4 border-white shadow-sm flex items-center justify-center">
+              <span class="text-white font-bold text-sm">📝</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-900" style="font-family: 'Poppins', sans-serif;">Observación</p>
+              <p class="text-xs text-gray-600" style="font-family: 'Poppins', sans-serif;">Nota registrada por efector o referente sobre situación del día a día</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative">
+        <!-- Línea vertical de la timeline -->
+        <div class="absolute left-6 sm:left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+
+        @for (item of timelineItems; track item.id) {
+          <div class="relative flex mb-8">
+            <div class="flex-shrink-0 mr-6 sm:mr-4 relative z-10">
+              <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-full border-4 border-white shadow-md flex items-center justify-center"
+                   [class.bg-green-500]="item.estado === 'presente'"
+                   [class.bg-red-500]="item.estado === 'ausente'"
+                   [class.bg-blue-500]="item.type === 'nota'">
+                @if (item.type === 'asistencia') {
+                  <span class="text-white font-bold text-lg">
+                    {{ item.estado === 'presente' ? '✓' : '✗' }}
+                  </span>
+                } @else {
+                  <span class="text-white font-bold text-lg">📝</span>
+                }
+              </div>
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-4 transition-all duration-200 hover:shadow-md">
+                <div class="mb-4">
+                  <div class="flex items-center gap-3 mb-2">
+                    <span class="text-sm font-medium text-gray-500" style="font-family: 'Poppins', sans-serif;">{{ formatDate(item.fecha) }}</span>
+                    <span class="px-3 py-1 rounded-full text-xs font-medium"
+                          [class.bg-green-100]="item.type === 'asistencia'"
+                          [class.text-green-800]="item.type === 'asistencia'"
+                          [class.bg-blue-100]="item.type === 'nota'"
+                          [class.text-blue-800]="item.type === 'nota'">
+                      {{ item.type === 'asistencia' ? 'Asistencia' : 'Observación' }}
+                    </span>
+                  </div>
+                  <h3 class="text-lg font-semibold text-gray-900" style="font-family: 'Poppins', sans-serif;">{{ item.titulo }}</h3>
+                </div>
+
+                <div class="mb-4">
+                  @if (item.type === 'asistencia') {
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-3">
+                      <div class="flex flex-col">
+                        <span class="text-sm font-medium text-gray-500 mb-1" style="font-family: 'Poppins', sans-serif;">Espacio:</span>
+                        <span class="text-sm text-gray-900" style="font-family: 'Poppins', sans-serif;">{{ item.espacio }}</span>
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="text-sm font-medium text-gray-500 mb-1" style="font-family: 'Poppins', sans-serif;">Responsable:</span>
+                        <span class="text-sm text-gray-900" style="font-family: 'Poppins', sans-serif;">{{ item.responsable }}</span>
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="text-sm font-medium text-gray-500 mb-1" style="font-family: 'Poppins', sans-serif;">Estado:</span>
+                        <span class="text-sm text-gray-900 font-medium"
+                              [class.text-green-600]="item.estado === 'presente'"
+                              [class.text-red-600]="item.estado === 'ausente'">
+                          {{ item.estado === 'presente' ? 'Presente' : 'Ausente' }}
+                        </span>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-3">
+                      <div class="flex flex-col">
+                        <span class="text-sm font-medium text-gray-500 mb-1" style="font-family: 'Poppins', sans-serif;">Profesional:</span>
+                        <span class="text-sm text-gray-900" style="font-family: 'Poppins', sans-serif;">{{ item.actor }}</span>
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="text-sm font-medium text-gray-500 mb-1" style="font-family: 'Poppins', sans-serif;">Rol:</span>
+                        <span class="text-sm text-gray-900" style="font-family: 'Poppins', sans-serif;">{{ item.rol }}</span>
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                <div class="border-t border-gray-100 pt-4">
+                  <button class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                          (click)="showObservaciones(item)"
+                          type="button"
+                          style="font-family: 'Poppins', sans-serif;">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    Ver Observaciones
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Modal de observaciones -->
+  @if (selectedItem) {
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1100] p-4" (click)="closeObservaciones()">
+      <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden sm:mx-4" (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <h3 class="text-xl font-semibold text-gray-900" style="font-family: 'Poppins', sans-serif;">{{ selectedItem.titulo }}</h3>
+          <button class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" (click)="closeObservaciones()" type="button">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="p-6 overflow-y-auto">
+          <div class="space-y-3">
+            <h4 class="text-sm font-medium text-gray-700" style="font-family: 'Poppins', sans-serif;">Observaciones:</h4>
+            <p class="text-sm text-gray-600 leading-relaxed bg-gray-50 p-4 rounded-lg" style="font-family: 'Poppins', sans-serif;">{{ selectedItem.observacion }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal de nueva observación -->
+  @if (showNuevaObservacionModal) {
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1100] p-4" (click)="closeNuevaObservacionModal()">
+      <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-hidden" (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <h3 class="text-xl font-semibold text-gray-900" style="font-family: 'Poppins', sans-serif;">Nueva Observación</h3>
+          <button class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" (click)="closeNuevaObservacionModal()" type="button">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="p-6">
+          <form [formGroup]="nuevaObservacionForm" (ngSubmit)="crearNuevaObservacion()">
+            <div class="space-y-4">
+              <!-- Título -->
+              <div>
+                <app-input
+                  label="Título"
+                  name="titulo"
+                  placeholder="Ingrese un título descriptivo"
+                  [control]="tituloControl">
+                </app-input>
+              </div>
+
+              <!-- Observación -->
+              <div>
+                <label class="block text-sm font-bold text-black mb-2" style="font-family: 'Poppins', sans-serif;">
+                  Observación
+                </label>
+                <textarea
+                  [formControl]="observacionControl"
+                  rows="4"
+                  class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent resize-none"
+                  placeholder="Describa la observación detalladamente..."
+                  style="font-family: 'Poppins', sans-serif;">
+                </textarea>
+              </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-end gap-3 mt-6">
+              <app-button
+                text="Cancelar"
+                variant="outline"
+                (clicked)="closeNuevaObservacionModal()">
+              </app-button>
+              <app-button
+                text="Agregar"
+                variant="primary"
+                [disabled]="nuevaObservacionForm.invalid || creatingObservacion"
+                [loading]="creatingObservacion"
+                type="submit">
+              </app-button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="relative">

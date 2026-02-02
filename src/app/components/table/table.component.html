@@ -1,0 +1,428 @@
+<!-- Contenedor principal con layout fijo -->
+<div class="flex flex-col min-h-0">
+  <!-- Filtro de búsqueda moderno -->
+  @if (showFilter) {
+    <!-- Sistema de filtros avanzados -->
+    @if (filters && filters.length > 0) {
+      <div class="flex-shrink-0 mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-3 md:p-4">
+      <div class="flex flex-col gap-3">
+        <!-- Título del filtro -->
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900" style="font-family: 'Poppins', sans-serif;">Filtros</h3>
+          @if (hasActiveFilters) {
+            <button
+              (click)="clearFilters()"
+              class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              style="font-family: 'Poppins', sans-serif;">
+              <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              Limpiar filtros
+            </button>
+          }
+        </div>
+
+        <!-- Inputs de filtro dinámicos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div *ngFor="let filter of filters" class="space-y-1">
+            <label class="block text-sm font-medium text-gray-700" style="font-family: 'Poppins', sans-serif;">
+              {{ filter.label }}
+            </label>
+
+            <!-- Input de texto -->
+            @if (filter.type === 'text' || filter.type === 'email') {
+              <div class="relative">
+                <input
+                  [type]="filter.type"
+                  [(ngModel)]="filterValues[filter.key]"
+                  (input)="handleFilterChange()"
+                  [placeholder]="filter.placeholder || 'Buscar...'"
+                  class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-500 text-sm"
+                  style="font-family: 'Poppins', sans-serif;">
+              </div>
+            }
+
+            <!-- Select -->
+            @if (filter.type === 'select') {
+              <select
+                [(ngModel)]="filterValues[filter.key]"
+                (change)="handleFilterChange()"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-gray-900 bg-white text-sm"
+                style="font-family: 'Poppins', sans-serif;">
+                <option value="">Todos</option>
+                <option *ngFor="let option of filter.options" [value]="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+            }
+
+            <!-- Input de número -->
+            @if (filter.type === 'number') {
+              <input
+                type="number"
+                [(ngModel)]="filterValues[filter.key]"
+                (input)="handleFilterChange()"
+                [placeholder]="filter.placeholder || '0'"
+                [attr.min]="filter.min ? filter.min.toString() : null"
+                [attr.max]="filter.max ? filter.max.toString() : null"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-500 text-sm"
+                style="font-family: 'Poppins', sans-serif;">
+            }
+
+            <!-- Input de fecha -->
+            @if (filter.type === 'date') {
+              <input
+                type="date"
+                [(ngModel)]="filterValues[filter.key]"
+                (change)="handleFilterChange()"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-gray-900 text-sm"
+                style="font-family: 'Poppins', sans-serif;">
+            }
+          </div>
+        </div>
+
+        <!-- Información de resultados -->
+        @if (hasActiveFilters) {
+          <div class="flex items-center gap-2 text-sm font-medium pt-2 border-t border-gray-200" style="color: #3362D9; font-family: 'Poppins', sans-serif;">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>{{ totalFilteredItems }} resultado{{ totalFilteredItems !== 1 ? 's' : '' }} encontrado{{ totalFilteredItems !== 1 ? 's' : '' }}</span>
+          </div>
+        } @else {
+          <div class="text-sm text-gray-500 pt-2 border-t border-gray-200" style="font-family: 'Poppins', sans-serif;">
+            {{ totalItems }} elemento{{ totalItems !== 1 ? 's' : '' }} en total
+          </div>
+        }
+
+        <!-- Chips de filtros activos -->
+        @if (hasActiveFilters) {
+          <div class="flex flex-wrap gap-2 pt-2">
+            <ng-container *ngFor="let filter of filters">
+              @if (filterValues[filter.key]) {
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white"
+                      style="background-color: #A3C9F9; color: #3362D9; font-family: 'Poppins', sans-serif;">
+                  <span class="mr-1">{{ filter.label }}:</span>
+                  <span>{{ getFilterDisplayValue(filter) }}</span>
+                  <button
+                    (click)="filterValues[filter.key] = ''; handleFilterChange()"
+                    class="ml-1 hover:bg-white hover:bg-opacity-20 rounded-full p-0.5">
+                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </span>
+              }
+            </ng-container>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Sistema de filtro simple (compatibilidad) -->
+  @else {
+    <div class="flex-shrink-0 mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-3 md:p-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <!-- Input de búsqueda -->
+        <div class="relative flex-1 max-w-md">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <input
+            type="text"
+            [(ngModel)]="filterText"
+            (input)="onFilterInput()"
+            [placeholder]="filterPlaceholder"
+            class="w-full pl-12 pr-12 py-1 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-500 text-sm"
+            style="font-family: 'Poppins', sans-serif;">
+          @if (filterText) {
+            <button
+              (click)="clearFilter()"
+              class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200"
+              title="Limpiar búsqueda">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          }
+        </div>
+
+        <!-- Información de resultados -->
+        <div class="flex items-center gap-3">
+          @if (filterText) {
+            <div class="flex items-center gap-2 text-sm font-medium" style="color: #3362D9; font-family: 'Poppins', sans-serif;">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>{{ totalFilteredItems }} resultado{{ totalFilteredItems !== 1 ? 's' : '' }} encontrado{{ totalFilteredItems !== 1 ? 's' : '' }}</span>
+            </div>
+          } @else {
+            <div class="text-sm text-gray-500 font-medium" style="font-family: 'Poppins', sans-serif;">
+              {{ totalItems }} elemento{{ totalItems !== 1 ? 's' : '' }} en total
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Chips de filtros activos (opcional para futuras expansiones) -->
+      @if (filterText) {
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white" style="background-color: #A3C9F9; color: #3362D9; font-family: 'Poppins', sans-serif;">
+            <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            "{{ filterText }}"
+            <button (click)="clearFilter()" class="ml-1 hover:bg-white hover:bg-opacity-20 rounded-full p-0.5">
+              <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </span>
+        </div>
+      }
+    </div>
+  }
+}
+
+<!-- Tabla responsive: en desktop tabla, en mobile cards -->
+<div class="flex-1 w-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+  <!-- Desktop: tabla normal -->
+  <div class="hidden md:block">
+    <table class="min-w-full divide-y divide-gray-200">
+      <!-- Encabezados -->
+      <thead class="bg-gray-50">
+        <tr>
+          <th *ngFor="let col of columns" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style="font-family: 'Poppins', sans-serif;">
+            {{ col.label }}
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style="font-family: 'Poppins', sans-serif;">
+            Acciones
+          </th>
+        </tr>
+      </thead>
+      <!-- Cuerpo -->
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let item of paginatedData; trackBy: trackByFn" class="hover:bg-gray-50 transition-colors duration-200">
+          <td *ngFor="let col of columns" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium" style="font-family: 'Poppins', sans-serif;">
+            @if (col.key === 'fechaNacimiento') {
+              {{ item[col.key] | date:'dd/MM/yyyy' }}
+            } @else {
+              {{ item[col.key] }}
+            }
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <!-- Acciones personalizadas -->
+            @if (customActions && customActions.length > 0) {
+              <div class="flex space-x-2">
+                <button
+                  *ngFor="let action of customActions"
+                  (click)="handleCustomAction(action.key, item)"
+                  [class]="action.color + ' hover:' + (action.bgColor || action.color.replace('text-', 'bg-').replace('-600', '-50')) + ' transition-colors duration-200 p-1 rounded'"
+                  [title]="action.label">
+                  @if (isImage(action.icon)) {
+                    <img [src]="action.icon" class="w-5 h-5" [alt]="action.label" [style]="getImageStyle(action.color)">
+                  } @else {
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path [attr.d]="action.icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                  }
+                </button>
+              </div>
+            }
+            <!-- Acciones por defecto -->
+            @if (showDefaultActions && (!customActions || customActions.length === 0)) {
+              <div class="flex space-x-3">
+                <button
+                  (click)="onView.emit(item)"
+                  class="text-blue-600 hover:text-blue-900 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
+                  title="Ver detalles">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                </button>
+                <button
+                  (click)="onEdit.emit(item)"
+                  class="text-green-600 hover:text-green-900 transition-colors duration-200 p-1 rounded hover:bg-green-50"
+                  title="Editar">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  </svg>
+                </button>
+                <button
+                  (click)="onDelete.emit(item)"
+                  class="text-red-600 hover:text-red-900 transition-colors duration-200 p-1 rounded hover:bg-red-50"
+                  title="Eliminar">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                </button>
+              </div>
+            }
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile: cards apiladas (max-width 650px) -->
+  <div class="md:hidden">
+    <div class="divide-y divide-gray-200">
+      <div *ngFor="let item of paginatedData; trackBy: trackByFn" class="p-4 hover:bg-gray-50 transition-colors duration-200">
+        <div class="space-y-2">
+          <div *ngFor="let col of columns" class="flex justify-between items-center">
+            <span class="text-sm font-medium text-gray-500" style="font-family: 'Poppins', sans-serif;">{{ col.label }}:</span>
+            <span class="text-sm text-gray-900 font-medium" style="font-family: 'Poppins', sans-serif;">
+              @if (col.key === 'fechaNacimiento') {
+                {{ item[col.key] | date:'dd/MM/yyyy' }}
+              } @else {
+                {{ item[col.key] }}
+              }
+            </span>
+          </div>
+          <div class="flex justify-end space-x-3 pt-2 border-t border-gray-100">
+            <!-- Acciones personalizadas -->
+            @if (customActions && customActions.length > 0) {
+              <button
+                *ngFor="let action of customActions"
+                (click)="handleCustomAction(action.key, item)"
+                [class]="action.color + ' hover:' + (action.bgColor || action.color.replace('text-', 'bg-').replace('-600', '-50')) + ' transition-colors duration-200 px-3 py-1.5 rounded text-sm font-medium'"
+                [title]="action.label"
+                style="font-family: 'Poppins', sans-serif;">
+                {{ action.label }}
+              </button>
+            }
+            <!-- Acciones por defecto -->
+            @if (showDefaultActions && (!customActions || customActions.length === 0)) {
+              <button
+                (click)="onView.emit(item)"
+                class="text-blue-600 hover:text-blue-900 transition-colors duration-200 p-2 rounded hover:bg-blue-50"
+                title="Ver detalles">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+              </button>
+              <button
+                (click)="onEdit.emit(item)"
+                class="text-green-600 hover:text-green-900 transition-colors duration-200 p-2 rounded hover:bg-green-50"
+                title="Editar">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+              </button>
+              <button
+                (click)="onDelete.emit(item)"
+                class="text-red-600 hover:text-red-900 transition-colors duration-200 p-2 rounded hover:bg-red-50"
+                title="Eliminar">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginador -->
+  @if (totalFilteredItems > itemsPerPage) {
+    <div class="bg-gray-50 px-4 py-3 sm:px-6 border-t border-gray-200">
+      <!-- Mobile: Botones simples -->
+      <div class="flex flex-1 justify-between sm:hidden">
+        <button
+          (click)="previousPage()"
+          [disabled]="currentPage === 1"
+          class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          style="font-family: 'Poppins', sans-serif;">
+          Anterior
+        </button>
+        <span class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700" style="font-family: 'Poppins', sans-serif;">
+          {{ currentPage }} de {{ totalPages }}
+        </span>
+        <button
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages"
+          class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          style="font-family: 'Poppins', sans-serif;">
+          Siguiente
+        </button>
+      </div>
+
+      <!-- Desktop: Paginación completa -->
+      <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm text-gray-700" style="font-family: 'Poppins', sans-serif;">
+            Mostrando <span class="font-medium" style="color: #3362D9;">{{ startItem }}</span> a <span class="font-medium" style="color: #3362D9;">{{ endItem }}</span> de <span class="font-medium" style="color: #3362D9;">{{ totalFilteredItems }}</span> resultados
+          </p>
+        </div>
+        <div>
+          <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+            <!-- Botón Anterior -->
+            <button
+              (click)="previousPage()"
+              [disabled]="currentPage === 1"
+              class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              <span class="sr-only">Anterior</span>
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+              </svg>
+            </button>
+
+            <!-- Números de página -->
+            <button
+              *ngFor="let page of pages"
+              (click)="changePage(page)"
+              [class.bg-primary]="currentPage === page"
+              [class.text-white]="currentPage === page"
+              [class.hover:bg-primary]="currentPage !== page"
+              class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 transition-colors"
+              style="font-family: 'Poppins', sans-serif;">
+              {{ page }}
+            </button>
+
+            <!-- Botón Siguiente -->
+            <button
+              (click)="nextPage()"
+              [disabled]="currentPage === totalPages"
+              class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              <span class="sr-only">Siguiente</span>
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </nav>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Mensaje cuando no hay resultados -->
+  @if (totalFilteredItems === 0) {
+    <div class="text-center py-12 px-4">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13l-6-6"></path>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900" style="font-family: 'Poppins', sans-serif;">No se encontraron resultados</h3>
+      @if (filterText || hasActiveFilters) {
+        <p class="mt-1 text-sm text-gray-500" style="font-family: 'Poppins', sans-serif;">No hay elementos que coincidan con los filtros aplicados.</p>
+        <div class="mt-6">
+          <button
+            (click)="clearFilters()"
+            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white hover:bg-opacity-90 transition-colors duration-200"
+            style="background-color: #3DCF9E; font-family: 'Poppins', sans-serif;">
+            Limpiar filtros
+          </button>
+        </div>
+      } @else {
+        <p class="mt-1 text-sm text-gray-500" style="font-family: 'Poppins', sans-serif;">No hay elementos para mostrar.</p>
+      }
+    </div>
+  }
+</div>
+</div>

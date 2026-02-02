@@ -1,0 +1,30 @@
+<div class="app-page">
+  <app-navbar></app-navbar>
+
+  <div class="app-page__body">
+    <app-sidebar></app-sidebar>
+
+    <div class="app-page__content">
+      <div class="page-header">
+        <div class="page-header__content">
+          <app-back-button [isBackButton]="true"></app-back-button>
+          <h1 class="page-header__title">
+            @if (loading) {
+              Trayectoria del Paciente
+            } @else if (patient) {
+              Trayectoria de {{ patient.nombre }}
+            } @else {
+              Paciente no encontrado
+            }
+          </h1>
+        </div>
+      </div>
+
+      <main class="page-main" style="width: 100%;">
+        @if (patient && patient.id) {
+          <app-trayectoria [idUsmya]="patient.id"></app-trayectoria>
+        }
+      </main>
+    </div>
+  </div>
+</div>

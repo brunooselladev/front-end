@@ -1,0 +1,165 @@
+@use '../../../styles/variables' as *;
+@use 'sass:color';
+
+.input-group {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-label {
+  font-family: $font-family-base;
+  color: $text-color;
+  font-weight: $font-weight-semibold;
+  font-size: 14px;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.input-field {
+  font-family: $font-family-base;
+  border: 2px solid $border-grey;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 15px;
+  color: $text-color;
+  font-weight: $font-weight-regular;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: $background-primary;
+
+  &::placeholder {
+    color: color.adjust($grey-color-text, $lightness: 10%);
+    font-weight: $font-weight-regular;
+  }
+
+  &:hover {
+    border-color: $color-primary;
+  }
+
+  &:focus {
+    border-color: $color-primary-bold;
+    box-shadow: 0 0 0 3px rgba($color-primary-bold, 0.1);
+    background-color: $background-primary;
+  }
+
+  &:disabled {
+    background-color: color.adjust($border-grey, $lightness: 5%);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// Estados de error
+.input-group.error {
+  .input-label {
+    color: $color-danger;
+  }
+
+  .input-field {
+    border-color: $color-danger;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($color-danger, 0.1);
+    }
+  }
+}
+
+// Estados de éxito
+.input-group.success {
+  .input-field {
+    border-color: $color-secondary;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($color-secondary, 0.1);
+    }
+  }
+}
+
+/* ===== Mobile Styles ===== */
+@media (max-width: $mobile-max) {
+  .input-label {
+    font-size: 13px;
+  }
+
+  .input-field {
+    padding: 12px 14px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  .input-error {
+    font-size: 12px;
+  }
+}
+
+// Estilos para mensajes de error
+.input-error {
+  font-family: $font-family-base;
+  font-size: 13px;
+  font-weight: $font-weight-regular;
+  color: $color-danger;
+  margin-top: 4px;
+  padding-left: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &::before {
+    content: '⚠';
+    font-size: 14px;
+  }
+}
+
+// Indicador de campo requerido
+.required-indicator {
+  color: $color-danger;
+  font-weight: $font-weight-semibold;
+  margin-left: 4px;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .input-field {
+    padding-right: 48px; // Espacio para el botón del ojo
+  }
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  color: $grey-color-text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $color-primary-bold;
+  }
+
+  &:focus {
+    outline: 2px solid $color-primary-bold;
+    outline-offset: 2px;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+

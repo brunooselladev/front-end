@@ -1,0 +1,50 @@
+<div class="home">
+  <div class="home__header">
+    <h1 class="home__header__title">Prueba de Componentes</h1>
+    <p class="home__header__subtitle">Componentes de notificaciones y modales</p>
+  </div>
+  
+  <!-- Sección de Notificaciones -->
+  <div class="home__section">
+    <h2 class="home__section__title">Notificaciones de Registro</h2>
+    <div class="home__section__notifications">
+      <app-card-notifications
+        *ngFor="let notification of notifications"
+        [userName]="notification.userName"
+        [espacioName]="notification.espacioName"
+        [requestDate]="notification.requestDate"
+        [notificationId]="notification.id"
+        (viewDetails)="onViewDetails($event)"
+        (accept)="onAcceptNotification($event)"
+        (reject)="onRejectNotification($event)"
+      ></app-card-notifications>
+    </div>
+  </div>
+
+  <!-- Sección de Modales -->
+  <div class="home__section">
+    <h2 class="home__section__title">Prueba de Modales</h2>
+    <div class="home__section__content">
+      <button class="home__section__content__test-button" (click)="openModal()">
+        Probar Modal Positivo
+      </button>
+      <button class="home__section__content__test-button home__section__content__test-button--danger" (click)="openDangerModal()">
+        Probar Modal Peligroso
+      </button>
+      
+      <div class="home__section__content__result" *ngIf="lastAction">
+        <p class="home__section__content__result__text">
+          Última acción: <span class="home__section__content__result__text__action">{{ lastAction }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <app-modal-confirmation
+    [message]="modalMessage"
+    [visible]="showModal"
+    [type]="modalType"
+    (cancel)="onCancel()"
+    (confirm)="onConfirm()"
+  ></app-modal-confirmation>
+</div>

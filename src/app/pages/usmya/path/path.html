@@ -1,0 +1,25 @@
+<div class="app-page">
+  <app-navbar></app-navbar>
+
+  <div class="app-page__body">
+    <app-sidebar></app-sidebar>
+
+    <div class="app-page__content">
+      <div class="page-header">
+        <h1 class="page-header__title">Mi trayectoria</h1>
+      </div>
+
+      <main class="page-main" style="width: 100%;">
+        @if (loading) {
+          <app-loading-overlay message="Cargando trayectoria..."></app-loading-overlay>
+        } @else if (usmyaId) {
+          <app-trayectoria [idUsmya]="usmyaId"></app-trayectoria>
+        } @else {
+          <div class="error-message">
+            <p>No se pudo cargar la trayectoria del usuario.</p>
+          </div>
+        }
+      </main>
+    </div>
+  </div>
+</div>

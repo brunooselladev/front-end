@@ -1,0 +1,48 @@
+@use '../../../../styles/variables' as *;
+
+.register-left {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* background-color eliminado para mostrar la imagen de fondo */
+
+  &__bg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+  &__overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(163, 201, 249, 0.85);
+    z-index: 2;
+  }
+  &__title {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 100%;
+    font-size: 2.2rem;
+    font-family: $title-font-family;
+    font-weight: $title-font-weight;
+    color: #fff;
+    text-align: center;
+    padding: 0 32px;
+    .mappa {
+      color: $color-primary-bold;
+      font-weight: 700;
+    }
+  }
+}
+
+@media (max-width: 650px) {
+  .register-left {
+    display: none;
+  }
+}

@@ -1,0 +1,17 @@
+<!-- Custom Modern Stepper - Progress Indicator Only -->
+<div class="custom-stepper">
+
+  <!-- Step Indicator -->
+  <div class="step-indicator" [attr.aria-label]="'Paso ' + currentStep + ' de ' + totalSteps">
+    <div class="step-bars">
+      <div
+        *ngFor="let step of stepsArray; let i = index"
+        class="step-bar"
+        [class.active]="i < currentStep"
+        [class.current]="i === currentStep - 1">
+      </div>
+    </div>
+    <span class="step-text">Paso {{ currentStep }} de {{ totalSteps }}</span>
+  </div>
+
+</div>

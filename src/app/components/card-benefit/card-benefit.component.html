@@ -1,0 +1,49 @@
+<div class="card-benefit">
+  <div class="card-benefit__header">
+    <div class="card-benefit__type-icon">
+      {{ getTipoIcon() }}
+    </div>
+    <div class="card-benefit__type-badge">
+      {{ actividad.esFija ? 'Fija' : 'Variable' }}
+    </div>
+  </div>
+
+  <div class="card-benefit__content">
+    <h3 class="card-benefit__title">{{ actividad.nombre }}</h3>
+
+    <div class="card-benefit__info">
+      <div class="card-benefit__info-item">
+        <span class="card-benefit__info-icon">📅</span>
+        <span class="card-benefit__info-text">{{ getFechaFormateada() }}</span>
+      </div>
+
+      <div class="card-benefit__info-item">
+        <span class="card-benefit__info-icon">🕒</span>
+        <span class="card-benefit__info-text">{{ actividad.hora }}{{ actividad.horaFin ? ' - ' + actividad.horaFin : '' }}</span>
+      </div>
+
+      <div class="card-benefit__info-item">
+        <span class="card-benefit__info-icon">📍</span>
+        <span class="card-benefit__info-text">{{ actividad.lugar }}</span>
+      </div>
+
+      <div class="card-benefit__info-item">
+        <span class="card-benefit__info-icon">👤</span>
+        <span class="card-benefit__info-text">{{ actividad.responsable }}</span>
+      </div>
+    </div>
+
+    <p class="card-benefit__description">
+      {{ truncarTexto(actividad.descripcion) }}
+    </p>
+  </div>
+
+  <div class="card-benefit__footer">
+    <button
+      class="card-benefit__button"
+      (click)="onVerMas()"
+      type="button">
+      Ver detalles
+    </button>
+  </div>
+</div>

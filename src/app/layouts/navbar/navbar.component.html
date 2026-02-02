@@ -1,0 +1,100 @@
+<nav class="navbar">
+  <div class="navbar__left">
+    <img src="assets/logo.png" alt="Logo" class="navbar__logo" />
+    <span class="navbar__app-name">MappA</span>
+  </div>
+  <div class="navbar__user-info">
+    <span class="navbar__user-name">{{ userEmail }}</span>
+    <span class="navbar__user-role">{{ userRoleDisplay }}</span>
+  </div>
+  <div class="navbar__right">
+    <button class="navbar__logout" (click)="logout()" title="Cerrar sesión">
+      <img src="assets/logout.svg" alt="Logout" />
+    </button>
+    <button class="navbar__hamburger" (click)="toggleMobileMenu()" title="Menú">
+      <img src="assets/hamburger.svg" alt="Menu" />
+    </button>
+    
+    <!-- Mobile Menu -->
+    @if (showMobileMenu) {
+      <div class="navbar__mobile-menu">
+        <!-- <div class="mobile-menu__header">
+          <div class="mobile-menu__user-info">
+            <div class="mobile-menu__user-avatar">
+              {{ userEmail ? userEmail.charAt(0).toUpperCase() : 'U' }}
+            </div>
+            <div class="mobile-menu__user-details">
+              <span class="mobile-menu__user-name">{{ userEmail }}</span>
+              <span class="mobile-menu__user-role">{{ userRoleDisplay }}</span>
+            </div>
+          </div>
+        </div> -->
+
+        <nav class="mobile-menu__nav">
+          <ul>
+            @for (item of sidebarItems; track item.label) {
+              <li class="mobile-menu__item">
+                <!-- Item sin subsecciones -->
+                @if (!item.subsections) {
+                  <a 
+                    [routerLink]="item.url"
+                    class="mobile-menu__link"
+                    [class.selected]="isActive(item.url)"
+                    (click)="selectItem(item.url)">
+                    <span class="mobile-menu__icon">
+                      <img [src]="item.icon" alt="icon" />
+                    </span>
+                    <span class="mobile-menu__label">{{ item.label }}</span>
+                  </a>
+                } @else {
+                  <!-- Item con subsecciones -->
+                  <div class="mobile-menu__parent-item">
+                    <div 
+                      class="mobile-menu__link mobile-menu__link--parent"
+                      [class.expanded]="isExpanded(item)"
+                      (click)="toggleSubsections(item, $event)">
+                      <span class="mobile-menu__icon">
+                        <img [src]="item.icon" alt="icon" />
+                      </span>
+                      <span class="mobile-menu__label">{{ item.label }}</span>
+                      <span class="mobile-menu__arrow" [class.rotated]="isExpanded(item)">
+                        ›
+                      </span>
+                    </div>
+                    
+                    <!-- Subsecciones -->
+                    @if (isExpanded(item)) {
+                      <ul class="mobile-menu__subsections">
+                        @for (subsection of item.subsections; track subsection.label) {
+                          <li class="mobile-menu__subsection">
+                            <a 
+                              [routerLink]="subsection.url"
+                              class="mobile-menu__link mobile-menu__link--child"
+                              [class.selected]="isActive(subsection.url)"
+                              (click)="selectItem(subsection.url)">
+                              <span class="mobile-menu__label">{{ subsection.label }}</span>
+                            </a>
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </div>
+                }
+              </li>
+            }
+          </ul>
+        </nav>
+
+        <!-- Logout button -->
+        <div class="mobile-menu__footer">
+          <button class="mobile-menu__logout-btn" (click)="logout()">
+            <span class="mobile-menu__logout-icon">
+              <img src="assets/logout.svg" alt="Logout" />
+            </span>
+            <span class="mobile-menu__logout-label">Cerrar sesión</span>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</nav>

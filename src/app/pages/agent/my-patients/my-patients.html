@@ -1,0 +1,41 @@
+<div class="app-page">
+  <app-navbar></app-navbar>
+
+  <div class="app-page__body">
+    <app-sidebar></app-sidebar>
+
+    <div class="app-page__content">
+      <div class="page-header">
+        <h1 class="page-header__title">Mis Pacientes</h1>
+         <app-button
+            label="Nuevo paciente"
+            variant="primary"
+            size="medium"
+            (clicked)="onAddPatient()">
+          </app-button>
+      </div>
+
+      <main class="page-main" style="width: 100%;">
+        @if (loading) {
+          <div class="flex justify-center items-center py-12">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span class="ml-2 text-gray-600">Cargando pacientes...</span>
+          </div>
+        } @else {
+          <app-table
+            [columns]="columns"
+            [data]="patients"
+            [totalItems]="patients.length"
+            [itemsPerPage]="10"
+            [currentPage]="1"
+            [filters]="filters"
+            [customActions]="customActions"
+            [showFilter]="true"
+            (onCustomAction)="onCustomAction($event)"
+            class="w-full">
+          </app-table>
+        }
+      </main>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+@use '../../../../styles/variables' as *;
+
+// Minimal custom styles for enhanced UX (following project conventions)
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  font-family: $font-family-base;
+}
+
+// Custom animation delay for background elements
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+// Responsive breakpoints following project conventions
+@media (max-width: 640px) {
+  :host {
+    padding: 0;
+  }
+
+  // Adjust spacing on small screens
+  .register-branding {
+    margin-bottom: 2rem;
+  }
+}
+
+.content-img{
+    width: 250px;
+    height: 80px;
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}

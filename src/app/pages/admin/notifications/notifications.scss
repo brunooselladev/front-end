@@ -1,0 +1,302 @@
+@use '../../../../styles/variables' as *;
+@use 'sass:color';
+
+.page-main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: $spacing-lg;
+    min-height: 70vh; // Altura mínima para evitar que el layout salte
+}
+
+// Contenedor de tabs fijo
+app-notification-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white;
+  padding-bottom: $spacing-sm;
+}
+
+// Contenedor de cards con altura mínima
+.cards-container {
+  min-height: 400px; // Altura mínima para evitar saltos del layout
+  position: relative;
+  flex: 1; // Ocupar el espacio restante
+
+  // Loading state para smooth transitions
+  &.loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+// Loading state styles
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: $spacing-xl;
+
+  &__content {
+    text-align: center;
+
+    &__spinner {
+      font-size: 32px;
+      display: block;
+      margin-bottom: $spacing-sm;
+      animation: pulse 2s infinite;
+    }
+
+    &__text {
+      font-size: 14px;
+      color: $grey-color-text;
+      font-family: $font-family-base;
+      margin: 0;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+// Loading container for overlay
+.loading-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+// Estilos para detalles del usuario en side menu
+.user-details {
+  padding: 0;
+
+  &__section {
+    margin-bottom: $spacing-lg;
+    border-bottom: 1px solid $border-grey;
+    padding-bottom: $spacing-md;
+
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    &__title {
+      font-size: 16px;
+      font-weight: $font-weight-semibold;
+      font-family: $font-family-base;
+      color: $color-primary-bold;
+      margin: 0 0 $spacing-sm 0;
+      padding-bottom: 4px;
+      border-bottom: 2px solid $color-primary;
+    }
+
+    &__content {
+      &__badge {
+        display: flex;
+        align-items: center;
+        gap: $spacing-xs;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: $spacing-xs $spacing-sm;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: $font-weight-semibold;
+        margin-bottom: $spacing-sm;
+        box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+
+        &__icon {
+          font-size: 14px;
+        }
+
+        &__text {
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+
+      &__field {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: $spacing-sm;
+        padding: 8px 0;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &__label {
+          font-weight: $font-weight-semibold;
+          font-family: $font-family-base;
+          color: $grey-color-text;
+          font-size: 13px;
+          min-width: 120px;
+          text-align: left;
+        }
+
+        &__value {
+          font-weight: $font-weight-regular;
+          font-family: $font-family-base;
+          color: $text-color;
+          font-size: 13px;
+          text-align: right;
+          flex: 1;
+          margin-left: $spacing-sm;
+          word-break: break-word;
+
+          &--role {
+            background: $color-primary;
+            color: $color-primary-bold;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: $font-weight-semibold;
+          }
+
+          &--approved {
+            color: $color-secondary;
+            font-weight: $font-weight-semibold;
+          }
+
+          &--pending {
+            color: $color-danger;
+            font-weight: $font-weight-semibold;
+          }
+        }
+      }
+    }
+  }
+
+  &__actions {
+    margin-top: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+
+    &__button {
+      padding: $spacing-sm $spacing-md;
+      border-radius: 8px;
+      border: none;
+      font-weight: $font-weight-semibold;
+      font-family: $font-family-base;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &--approve {
+        background: $color-secondary;
+        color: white;
+
+        &:hover {
+          background: color.adjust($color-secondary, $lightness: -10%);
+          transform: translateY(-1px);
+        }
+      }
+
+      &--reject {
+        background: $color-danger;
+        color: white;
+
+        &:hover {
+          background: color.adjust($color-danger, $lightness: -10%);
+          transform: translateY(-1px);
+        }
+      }
+    }
+  }
+}
+
+// Responsive para user details
+@media (max-width: $mobile-max) {
+  .user-details {
+    &__section {
+      &__content {
+        &__field {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 4px;
+
+          &__label {
+            min-width: auto;
+            font-size: 12px;
+          }
+
+          &__value {
+            text-align: left;
+            margin-left: 0;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+
+    &__actions {
+      &__button {
+        font-size: 13px;
+        padding: 10px $spacing-sm;
+      }
+    }
+  }
+}
+
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xl;
+  text-align: center;
+
+  &__content {
+    max-width: 300px;
+
+    &__icon {
+      font-size: 48px;
+      display: block;
+      margin-bottom: $spacing-md;
+      opacity: 0.6;
+    }
+
+    &__title {
+      margin: 0 0 $spacing-sm 0;
+      font-size: 18px;
+      font-weight: $font-weight-semibold;
+      color: $text-color;
+      font-family: $font-family-base;
+    }
+
+    &__description {
+      margin: 0;
+      font-size: 14px;
+      color: $grey-color-text;
+      font-family: $font-family-base;
+      line-height: 1.5;
+    }
+  }
+}
+
+// Responsive para mobile
+@media (max-width: $mobile-max) {
+  .empty-state {
+    padding: $spacing-lg $spacing-md;
+
+    &__content {
+      &__icon {
+        font-size: 36px;
+        margin-bottom: $spacing-sm;
+      }
+
+      &__title {
+        font-size: 16px;
+      }
+
+      &__description {
+        font-size: 13px;
+      }
+    }
+  }
+}

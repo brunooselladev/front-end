@@ -1,0 +1,230 @@
+@use '../../../styles/variables' as *;
+
+// Estilos base del componente siguiendo BEM
+.notification-tabs {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 0 auto; // Centrar el componente
+  position: relative; // Para evitar movimientos del layout
+  flex-shrink: 0; // No permitir que se encoja
+
+  &__group {
+    border-bottom: 1px solid $border-grey;
+
+    // Override Material Design tabs
+    ::ng-deep {
+      .mat-mdc-tab-group {
+        --mdc-tab-indicator-active-indicator-color: $color-primary-bold;
+        --mdc-secondary-navigation-tab-container-height: 60px;
+      }
+
+      .mat-mdc-tab {
+        min-width: 120px;
+        flex: 1;
+        max-width: none;
+        overflow: visible;
+
+        .mdc-tab {
+          padding: 0 $spacing-sm;
+          min-height: 60px;
+          height: 60px;
+          overflow: visible;
+        }
+
+        .mdc-tab__content {
+          flex-direction: column;
+          gap: 4px;
+          overflow: visible;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .mdc-tab__text-label {
+          overflow: visible;
+          white-space: nowrap;
+        }
+      }
+
+      .mat-mdc-tab-body-wrapper {
+        display: none; // Ocultar el body ya que no usamos contenido dentro de tabs
+      }
+
+      .mat-mdc-tab-header {
+        overflow: visible;
+      }
+    }
+
+    &__tab {
+      &__label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        min-height: 50px;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: visible;
+
+        &__icon {
+          font-size: 20px;
+          line-height: 1;
+          margin-bottom: 2px;
+          display: block;
+        }
+
+        &__content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          width: 100%;
+          overflow: visible;
+
+          &__text {
+            font-size: 14px;
+            font-weight: $font-weight-semibold;
+            font-family: $font-family-base;
+            color: $grey-color-text;
+            text-align: center;
+            white-space: nowrap;
+            overflow: visible;
+          }
+
+          &__count {
+            background: $color-primary-bold;
+            color: white;
+            font-size: 12px;
+            font-weight: $font-weight-semibold;
+            padding: 4px 8px;
+            border-radius: 12px;
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            white-space: nowrap;
+            box-sizing: border-box;
+          }
+        }
+      }
+
+      // Estado activo
+      &.mat-mdc-tab-active &__label {
+        background: rgba($color-primary, 0.1);
+        color: $color-primary-bold;
+
+        &__content {
+          &__text {
+            color: $color-primary-bold;
+          }
+        }
+      }
+
+      // Hover effect
+      &:hover &__label {
+        background: rgba($color-primary, 0.05);
+
+        &__content {
+          &__text {
+            color: $color-primary-bold;
+          }
+        }
+      }
+    }
+  }
+
+  &__summary {
+    margin-top: $spacing-sm;
+    text-align: center;
+
+    &__text {
+      font-size: 12px;
+      color: $grey-color-text;
+      font-weight: $font-weight-regular;
+      font-family: $font-family-base;
+    }
+  }
+
+  // Responsive Design para mobile (max-width: 650px)
+  @media (max-width: $mobile-max) {
+    margin-bottom: $spacing-md;
+
+    &__group {
+      ::ng-deep {
+        .mat-mdc-tab-group {
+          --mdc-secondary-navigation-tab-container-height: 70px;
+        }
+
+        .mat-mdc-tab {
+          flex: 1;
+          min-width: 90px;
+
+          .mdc-tab {
+            padding: 0 6px;
+            min-height: 70px;
+            height: 70px;
+          }
+        }
+      }
+
+      &__tab {
+        &__label {
+          gap: 4px;
+          padding: 8px 6px;
+          min-height: 60px;
+
+          &__icon {
+            font-size: 18px;
+            margin-bottom: 2px;
+          }
+
+          &__content {
+            gap: 3px;
+
+            &__text {
+              font-size: 11px;
+              line-height: 1.2;
+            }
+
+            &__count {
+              font-size: 10px;
+              padding: 3px 6px;
+              min-width: 18px;
+              height: 18px;
+            }
+          }
+        }
+      }
+    }
+
+    &__summary {
+      margin-top: $spacing-xs;
+
+      &__text {
+        font-size: 11px;
+      }
+    }
+  }
+
+  // Animaciones sutiles para UX/UI
+  &__group__tab__label {
+    transform: translateY(0);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  // Estados de focus para accesibilidad
+  &__group__tab__label:focus {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}

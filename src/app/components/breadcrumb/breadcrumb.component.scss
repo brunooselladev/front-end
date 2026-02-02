@@ -1,0 +1,51 @@
+@use '../../../styles/variables' as *;
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  color: #888;
+  flex-wrap: wrap;
+
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+
+    &.active {
+      color: $color-primary-bold;
+      font-weight: 600;
+    }
+
+    &.clickable {
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      .breadcrumb-text:hover {
+        color: $color-primary-bold;
+        background-color: $color-primary-light;
+        padding: 2px 4px;
+        border-radius: 4px;
+      }
+    }
+
+    &-separator {
+      color: #ccc;
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: $mobile-max) {
+    font-size: 1rem;
+    margin-bottom: 16px;
+    gap: 2px;
+
+    &-separator {
+      margin-left: 2px;
+    }
+  }
+}

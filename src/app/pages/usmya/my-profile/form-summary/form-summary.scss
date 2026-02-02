@@ -1,0 +1,69 @@
+@use '../../../../../styles/variables.scss' as *;
+
+::ng-deep {
+  .btn-primary button,
+  app-button[variant="primary"] button {
+    background: $color-secondary !important;
+    color: white !important;
+    padding: 0.875rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: $font-weight-semibold;
+    font-family: $font-family-base;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9375rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &:hover:not(:disabled) {
+      background: darken($color-secondary, 8%) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba($color-secondary, 0.3);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 650px) {
+      padding: 1rem 1.5rem;
+      font-size: 0.9375rem;
+      width: 100%;
+    }
+  }
+
+  .btn-secondary button,
+  app-button[variant="secondary"] button {
+    background: transparent !important;
+    color: $grey-color-text !important;
+    padding: 0.875rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: $font-weight-semibold;
+    font-family: $font-family-base;
+    border: 1px solid $border-grey !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9375rem;
+
+    &:hover:not(:disabled) {
+      background: lighten($border-grey, 10%) !important;
+      border-color: darken($border-grey, 10%) !important;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 650px) {
+      padding: 1rem 1.5rem;
+      font-size: 0.9375rem;
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,70 @@
+<div class="app-page">
+  <app-navbar></app-navbar>
+
+  <div class="app-page__body">
+    <app-sidebar></app-sidebar>
+
+    <div class="app-page__content">
+      <div class="page-header">
+        <h1 class="page-header__title">Ficha de {{ participantName }}</h1>
+        <!-- <button
+          type="button"
+          class="btn-back"
+          (click)="goBack()">
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          Volver
+        </button> -->
+      </div>
+
+      <main class="page-main">
+        <!-- Loading State -->
+        <app-loading-overlay
+          *ngIf="!participantName"
+          [fullscreen]="false"
+          message="Cargando ficha del paciente..."
+          size="lg">
+        </app-loading-overlay>
+
+        <!-- Participant Profile Content -->
+        <div *ngIf="participantName" class="w-full">
+          <!-- Tabs de navegación -->
+          <app-notification-tabs
+            [tabs]="tabs"
+            [activeTab]="activeTab"
+            [showCount]="false"
+            [showSummary]="false"
+            (tabChange)="onTabChange($event)">
+          </app-notification-tabs>
+
+          <!-- Contenido según tab activo -->
+          @if (activeTab === 'datos') {
+            <div class="w-full">
+              <app-form-personal-data
+                [userData]="(userData$ | async) || undefined"
+                [readonly]="true"
+                (save)="onSaveProfile($event)"
+                (cancel)="onCancelEdit()">
+              </app-form-personal-data>
+            </div>
+          }
+
+          @if (activeTab === 'resumen') {
+            <div class="profile-container w-full md:w-4/5 mx-auto">
+              <app-form-summary></app-form-summary>
+            </div>
+          }
+
+          @if (activeTab === 'actividades') {
+            <div class="w-full">
+              <app-recommend-activities></app-recommend-activities>
+            </div>
+          }
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+

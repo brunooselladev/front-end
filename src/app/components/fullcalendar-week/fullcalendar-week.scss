@@ -1,0 +1,305 @@
+@use '../../../styles/variables' as *;
+
+.fullcalendar-week {
+  width: 100%;
+  font-family: $font-family-base;
+
+  // Sobrescribir estilos de FullCalendar con variables del proyecto
+  ::ng-deep {
+    // Toolbar principal - Más compacto y elegante
+    .fc-toolbar {
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-bold 100%);
+      padding: $spacing-sm $spacing-md;
+      border-radius: 8px 8px 0 0;
+      margin-bottom: 0 !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      .fc-toolbar-title {
+        color: white;
+        font-size: 18px;
+        font-weight: $font-weight-semibold;
+        text-transform: capitalize;
+        letter-spacing: 0.3px;
+
+        @media (max-width: $mobile-max) {
+          font-size: 15px;
+        }
+      }
+
+      .fc-button {
+        background-color: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: white;
+        font-weight: $font-weight-semibold;
+        text-transform: capitalize;
+        padding: 5px 12px;
+        font-size: 13px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+        &:hover:not(:disabled) {
+          background-color: rgba(255, 255, 255, 0.25);
+          border-color: rgba(255, 255, 255, 0.4);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+          transform: translateY(-1px);
+        }
+
+        &:active,
+        &.fc-button-active {
+          background-color: white;
+          color: $color-primary-bold;
+          border-color: white;
+        }
+
+        &:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+
+        @media (max-width: $mobile-max) {
+          padding: 4px 10px;
+          font-size: 11px;
+        }
+      }
+
+      .fc-button-group {
+        gap: 4px;
+      }
+    }
+
+    // Calendario principal
+    .fc {
+      border: 1px solid $border-grey;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    // Header de días - Más compacto
+    .fc-col-header {
+      background: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%);
+      
+      .fc-col-header-cell {
+        padding: $spacing-xs $spacing-xs;
+        font-weight: $font-weight-semibold;
+        color: $text-color;
+        border-color: $border-grey;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+
+        .fc-col-header-cell-cushion {
+          padding: 8px 4px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 2px;
+        }
+
+        @media (max-width: $mobile-max) {
+          padding: 6px 4px;
+          font-size: 10px;
+        }
+      }
+    }
+
+    // Área de tiempo
+    .fc-timegrid {
+      .fc-timegrid-axis {
+        width: 50px !important; // Columna de horas más angosta
+      }
+
+      .fc-timegrid-slot {
+        height: 50px; // Reducido de 60px a 50px
+        border-color: $border-grey;
+
+        @media (max-width: $mobile-max) {
+          height: 45px;
+        }
+      }
+
+      .fc-timegrid-slot-label {
+        color: $grey-color-text;
+        font-size: 11px;
+        font-weight: $font-weight-semibold;
+        vertical-align: top;
+        padding: 4px 6px;
+        text-align: right;
+
+        @media (max-width: $mobile-max) {
+          font-size: 9px;
+          padding: 2px 4px;
+        }
+      }
+
+      // Columnas de días
+      .fc-timegrid-col {
+        border-color: $border-grey;
+        min-width: 100px; // Ancho mínimo para cada día
+      }
+
+      // Línea de tiempo actual
+      .fc-timegrid-now-indicator-line {
+        border-color: #FF6B6B;
+        border-width: 2px;
+        box-shadow: 0 0 4px rgba(255, 107, 107, 0.5);
+      }
+
+      .fc-timegrid-now-indicator-arrow {
+        border-color: #FF6B6B;
+        border-width: 6px;
+      }
+    }
+
+    // Eventos - Mejorado para superposiciones
+    .fc-event {
+      border: none !important;
+      border-radius: 6px;
+      padding: 6px 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      margin: 1px 2px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+      backdrop-filter: blur(10px);
+
+      &:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        filter: brightness(1.08);
+        z-index: 1000 !important;
+      }
+
+      // Ajuste para eventos superpuestos
+      &.fc-timegrid-event {
+        border-left: 3px solid rgba(0, 0, 0, 0.15) !important;
+      }
+
+      .fc-event-main {
+        color: white;
+        padding: 0;
+      }
+
+      .fc-event-time {
+        display: none; // Ocultamos el tiempo por defecto porque usamos custom
+      }
+
+      .fc-event-title {
+        display: none; // Ocultamos el título por defecto porque usamos custom
+      }
+    }
+
+    // Contenido personalizado del evento - Mejorado
+    .fc-event-custom {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      height: 100%;
+      overflow: hidden;
+      justify-content: center;
+      padding: 2px 0;
+
+      &__title {
+        font-weight: $font-weight-semibold;
+        font-size: 13px;
+        line-height: 1.3;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; // Una sola línea con ...
+
+        @media (max-width: $mobile-max) {
+          display: none; // Ocultar título en mobile
+        }
+      }
+
+      &__space {
+        font-size: 10px;
+        font-weight: $font-weight-regular;
+        opacity: 0.92;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 1.2;
+
+        @media (max-width: $mobile-max) {
+          display: none; // Ocultar espacio en mobile
+        }
+      }
+    }
+
+    // Scrollbar personalizado
+    .fc-scroller {
+      &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: $color-primary;
+        border-radius: 3px;
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: $color-primary-bold;
+        }
+      }
+    }
+
+    // Ajustes para eventos superpuestos - Columnas side by side
+    .fc-timegrid-event-harness {
+      &[style*="left"] {
+        // Los eventos superpuestos automáticamente se ajustan con left/right
+        min-width: 80px !important;
+      }
+    }
+
+    // Mejorar visualización cuando hay múltiples eventos
+    .fc-timegrid-col-events {
+      margin: 0 1px;
+    }
+
+    // Ajustes responsive
+    @media (max-width: $mobile-max) {
+      .fc-header-toolbar {
+        flex-direction: column;
+        gap: $spacing-xs;
+        padding: $spacing-xs;
+      }
+
+      .fc-toolbar-chunk {
+        display: flex;
+        justify-content: center;
+      }
+
+      .fc-timegrid-col {
+        min-width: 70px;
+      }
+
+      .fc-event-custom {
+        gap: 2px;
+      }
+    }
+
+    // Animación suave al cargar
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fc-event {
+      animation: fadeIn 0.3s ease;
+    }
+  }
+}

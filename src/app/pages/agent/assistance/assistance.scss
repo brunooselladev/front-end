@@ -1,0 +1,41 @@
+@import '../../../../styles/variables.scss';
+
+.assistance-grid {
+    width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+//   padding: 1rem 0;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0.5rem 0;
+  }
+}
+
+// Estilos adicionales para la página
+.page-main {
+  padding: 2rem;
+  position: relative; // Para que el loading-overlay sea relativo a este contenedor
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+.page-header {
+  margin-bottom: 2rem;
+
+  &__title {
+    font-family: $title-font-family;
+    font-weight: $title-font-weight;
+    font-size: $title-font-size;
+    color: $text-color;
+    margin: 0;
+
+    @media (max-width: 768px) {
+      font-size: $title-font-size-mobile;
+    }
+  }
+}

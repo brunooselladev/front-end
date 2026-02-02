@@ -1,0 +1,101 @@
+// Variables globales de colores
+$input-label-color: #84818A;
+$input-label-color: #84818A;
+$color-primary: #A3C9F9;
+$color-primary-light: #D4E4F7;
+$color-primary-bold: #3362D9;
+$color-secondary: #3DCF9E;
+$color-danger: #FF6B6B;
+$sidebar-bg: #F5F5F5;
+$sidebar-item-text: #969696;
+$sidebar-item-icon: #84818A;
+$sidebar-item-selected-bg: #A3C9F9;
+$sidebar-item-selected-text: $color-primary-bold;
+$sidebar-item-selected-icon: $color-primary-bold;
+$grey-color-text: #84818A;
+$border-grey: #D9D9D9;
+$background-primary: #fff;
+$background-form: #FFFFFF;
+$text-color: #000000;
+
+// Tipografía
+$font-family-base: 'Poppins', sans-serif;
+$font-weight-regular: 400;
+$font-weight-semibold: 600;
+$font-size:24px;
+$font-size-mobile:20px;
+
+// Títulos principales
+$title-font-family: 'Poppins', sans-serif;
+$title-font-weight: 600;
+$title-font-size: 24px;
+$title-font-size-mobile: 18px;
+
+// Auth Pages Styles (Login & Register)
+$auth-welcome-font-size: 1.8rem;
+$auth-welcome-font-size-mobile: 1.6rem;
+$auth-welcome-color: #666;
+$auth-brand-color: $color-primary-bold;
+$auth-title-font-size: 2rem;
+$auth-title-font-size-mobile: 1.5rem;
+$auth-title-color: $color-primary-bold;
+$auth-subtitle-font-size: 1.1rem;
+$auth-subtitle-font-size-mobile: 1rem;
+$auth-subtitle-color: #666;
+$auth-card-bg: rgba(255, 255, 255, 0.98);
+$auth-card-blur: blur(10px);
+$auth-card-radius: 20px;
+$auth-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+$auth-background-image: url('/assets/img-background-login.jpg');
+$auth-background-overlay: linear-gradient(135deg, rgba(163, 201, 249, 0.85) 0%, rgba(51, 98, 217, 0.85) 100%);
+
+// Layout y espaciado globales
+$layout-max-width: 1200px;
+$content-max-width: 800px;
+$navbar-height: 70px;
+
+// Breakpoints responsive
+$mobile-max: 650px;
+$tablet-min: 651px;
+$tablet-max: 1199px;
+$desktop-min: 1200px;
+$breakpoint-md: 768px;
+
+// Espaciados globales
+$spacing-xs: 8px;
+$spacing-sm: 16px;
+$spacing-md: 24px;
+$spacing-lg: 32px;
+$spacing-xl: 48px;
+$spacing-xxl: 64px;
+
+// Background colors
+$color-background-light: #FFFFFF;
+$color-background-soft: #F8F9FA; // Añadido para campos de solo lectura y fondos suaves
+
+// Text colors
+$color-text-primary: #212529;
+$color-text-secondary: #6C757D;
+
+// Border colors
+$color-border: #DEE2E6;
+
+// Error colors
+$color-error: #DC3545;
+$color-error-light: #F8D7DA;
+
+// Layout values
+$border-radius: 8px;
+$box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+// Alias para compatibilidad
+$spacing-small: $spacing-sm;
+$spacing-medium: $spacing-md;
+$spacing-large: $spacing-lg;
+
+// Sugerencia: puedes agregar más variables para tamaños, espaciados, colores de estado, etc.
+$sidebar-bg: #F5F5F5;
+$sidebar-item-text: #969696;
+$sidebar-item-icon: #84818A;
+$sidebar-item-selected-bg: #A3C9F9;
+$sidebar-item-selected-text: $color-primary-bold;
+$sidebar-item-selected-icon: $color-primary-bold;

@@ -1,0 +1,351 @@
+@use '../../../styles/variables' as *;
+
+/* ===== Estilos compartidos para todos los formularios de registro ===== */
+
+/* ===== Layout base ===== */
+.register-page {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+
+  &__left {
+    width: 50%;
+    min-width: 50%;
+    display: flex;
+    position: relative;
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-bold 100%);
+  }
+
+  &__right {
+    width: 50%;
+    min-width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $background-primary;
+    padding: $spacing-large;
+    box-sizing: border-box;
+  }
+
+  &__container {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-large;
+  }
+
+  /* ===== Header Section ===== */
+  &__header {
+    text-align: center;
+  }
+
+  &__welcome {
+    display: none; // Oculto en desktop
+    flex-direction: column;
+    gap: $spacing-small;
+    margin-bottom: $spacing-medium;
+  }
+
+  &__welcome-text {
+    font-family: $font-family-base;
+    font-size: 18px;
+    font-weight: $font-weight-regular;
+    color: $text-color;
+  }
+
+  &__welcome-brand {
+    font-family: $title-font-family;
+    font-size: 32px;
+    font-weight: 700;
+    color: $color-primary-bold;
+    letter-spacing: -0.5px;
+  }
+
+  &__form-title,
+  &__title {
+    font-family: $title-font-family;
+    font-size: $title-font-size;
+    font-weight: $title-font-weight;
+    color: $color-primary-bold;
+    margin: 0 0 $spacing-small 0;
+    text-align: center;
+  }
+
+  &__form-subtitle,
+  &__subtitle {
+    font-family: $font-family-base;
+    font-size: 14px;
+    font-weight: $font-weight-regular;
+    color: $grey-color-text;
+    margin: 0 0 $spacing-medium 0;
+    text-align: center;
+  }
+
+  /* ===== Form Section ===== */
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-medium;
+    width: 100%;
+    box-sizing: border-box;
+
+    &__inputs {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-medium;
+      width: 100%;
+
+      app-input,
+      app-select {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+    }
+
+    &__bottom {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-medium;
+      margin-top: $spacing-small;
+
+      &__button {
+        width: 100%;
+
+        app-button {
+          width: 100%;
+        }
+      }
+
+      &__login-link {
+        font-family: $font-family-base;
+        font-size: 14px;
+        font-weight: $font-weight-regular;
+        color: $text-color;
+        text-align: center;
+        margin: 0;
+
+        a {
+          color: $color-primary-bold;
+          text-decoration: none;
+          font-weight: $font-weight-semibold;
+          transition: color 0.2s ease;
+
+          &:hover {
+            color: darken($color-primary-bold, 10%);
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-medium;
+    width: 100%;
+    margin-bottom: $spacing-medium;
+
+    app-card-option {
+      width: 100%;
+    }
+  }
+
+  &__login-link {
+    font-family: $font-family-base;
+    font-size: 14px;
+    font-weight: $font-weight-regular;
+    color: $text-color;
+    text-align: center;
+    margin-top: $spacing-medium;
+
+    a {
+      color: $color-primary-bold;
+      text-decoration: none;
+      font-weight: $font-weight-semibold;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: darken($color-primary-bold, 10%);
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__title-mobile {
+    display: none;
+  }
+}
+
+/* ===== Mobile Styles ===== */
+@media (max-width: $mobile-max) {
+  .register-page {
+    flex-direction: column;
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+    
+    // Fondo con imagen y overlay
+    &::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('/assets/img-background-login.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+    }
+
+    &::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        180deg,
+        rgba($color-primary-bold, 0.95) 0%,
+        rgba($color-primary-bold, 0.85) 50%,
+        rgba($color-primary, 0.9) 100%
+      );
+      z-index: 1;
+    }
+
+    &__left {
+      display: none;
+    }
+
+    &__right {
+      width: 100%;
+      min-width: 100%;
+      min-height: 100vh;
+      padding: $spacing-sm;
+      background: transparent;
+      position: relative;
+      z-index: 2;
+      box-sizing: border-box;
+    }
+
+    &__container {
+      max-width: 100%;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: $spacing-md $spacing-sm;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+    }
+
+    &__header {
+      text-align: center;
+    }
+
+    &__welcome {
+      display: flex; // Visible en mobile
+      margin-bottom: $spacing-medium;
+    }
+
+    &__welcome-text {
+      font-size: 16px;
+      color: $grey-color-text;
+    }
+
+    &__welcome-brand {
+      font-size: 28px;
+    }
+
+    &__form-title,
+    &__title {
+      font-size: $title-font-size-mobile;
+      margin-bottom: $spacing-small;
+    }
+
+    &__form-subtitle,
+    &__subtitle {
+      font-size: 13px;
+    }
+
+    &__form {
+      gap: $spacing-medium;
+
+      &__inputs {
+        gap: $spacing-medium;
+      }
+
+      &__bottom {
+        &__button {
+          width: 100%;
+
+          app-button {
+            width: 100%;
+          }
+        }
+
+        &__login-link {
+          font-size: 13px;
+        }
+      }
+    }
+
+    &__cards {
+      gap: $spacing-sm;
+    }
+
+    &__login-link {
+      font-size: 13px;
+      margin-top: $spacing-medium;
+    }
+
+    &__title-mobile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: $spacing-medium;
+
+      .welcome {
+        font-family: $font-family-base;
+        font-size: 16px;
+        color: $grey-color-text;
+        text-align: center;
+      }
+
+      .mappa {
+        font-family: $title-font-family;
+        font-size: 28px;
+        font-weight: 700;
+        color: $color-primary-bold;
+        display: block;
+        margin-top: 4px;
+      }
+    }
+  }
+}
+
+/* ===== Tablet Styles ===== */
+@media (min-width: 651px) and (max-width: 1024px) {
+  .register-page {
+    &__left {
+      width: 40%;
+      min-width: 40%;
+    }
+
+    &__right {
+      width: 60%;
+      min-width: 60%;
+    }
+
+    &__container {
+      max-width: 520px;
+    }
+  }
+}

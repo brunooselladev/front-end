@@ -1,0 +1,453 @@
+<!-- Main container with gradient background -->
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50 to-indigo-50 flex items-center justify-center p-4 relative overflow-hidden">
+
+  <!-- Background decorative elements -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+    <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse animation-delay-2000"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-100 rounded-full mix-blend-multiply filter blur-2xl opacity-30"></div>
+  </div>
+
+  <div class="absolute top-2 right-4 z-20 hidden md:block content-img">
+    <img src="assets/logo-arguello.png" alt="Logo Arguello" class="w-60 h-60 opacity-80">
+  </div>
+
+  <!-- Main content container -->
+  <div class="relative z-10 w-full max-w-lg md:max-w-4xl mx-auto">
+
+    <!-- App branding -->
+    <div class="text-center mb-6">
+      <h1 class="text-5xl font-black bg-gradient-to-r from-blue-600 via-emerald-600 to-indigo-600 bg-clip-text text-transparent mb-2 tracking-tight">
+        MappA
+      </h1>
+      <div class="w-16 h-1 bg-gradient-to-r from-blue-500 via-emerald-500 to-indigo-500 rounded-full mx-auto mb-1"></div>
+      <p class="text-xs text-gray-600 font-medium tracking-wide uppercase">
+        Red Comunitaria
+      </p>
+    </div>
+
+
+    <!-- Form container -->
+    <div class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-5 relative overflow-hidden">
+
+      <!-- Subtle inner glow -->
+      <div class="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-emerald-50/20 to-indigo-50/30 rounded-2xl"></div>
+
+      <!-- Content -->
+      <div class="relative z-10">
+
+        <div class="mb-3 flex justify-center">
+        <button class="flex items-center text-gray-500 hover:text-gray-700 text-sm">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          <a routerLink="/registro/ofrezco-ayuda" class="text-gray-600 hover:text-gray-800 text-sm font-medium transition-colors duration-200 ">
+            Volver
+          </a>
+        </button>
+      </div>
+
+        <!-- Form title inside card -->
+        <div class="text-center mb-1 flex flex-col md:flex-row md:justify-between">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3 leading-tight">
+            Registro - Mi institución
+          </h2>
+          <div class="flex-shrink-0 ml-6 mt-3 md:mt-0" style="width: 260px;">
+            <app-stepper
+              step1Label="Datos básicos"
+              step2Label="Datos complementarios"
+              [stepControl1]="formStep1"
+              [stepControl2]="formStep2"
+              (finished)="onFinish()" >
+            </app-stepper>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <h3 class="text-gray-600 text-xl mt-1">
+            {{ (stepper?.currentStep ?? 1) === 1 ? 'Completá los datos de tu institución' : 'Agregá actividades a tu institución' }}
+          </h3>
+        </div>
+
+        <!-- Form -->
+        <form [formGroup]="formStep1" class="">
+
+          @if ((stepper?.currentStep ?? 1) === 1) {
+            <!-- Two column grid for inputs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <!-- Left column -->
+                <app-input label="Nombre del Espacio" name="nombre" placeholder="Ej: Centro Comunitario Norte" [control]="nombre" [required]="true">
+                </app-input>
+
+                <app-input label="Teléfono" name="telefono"  [allowOnlyNumbersAndPlus]="true" type="text" placeholder="Ej: 351-123-4567" [control]="telefono" [required]="true">
+                </app-input>
+
+                <app-select label="Tipo de Organización" name="tipoOrganizacion" [options]="tipoOrganizacionOpciones" [control]="tipoOrganizacion" [required]="true">
+                </app-select>
+
+                <app-input label="Dirección" name="direccion" placeholder="Ej: Av. Colon 1234" [control]="direccion">
+                </app-input>
+
+              <!-- Right column -->
+
+                <app-input label="Barrio" name="barrio" placeholder="Ej: Centro" [control]="barrio">
+                </app-input>
+
+                <app-input label="¿Quién o quiénes están a cargo?" name="encargado" placeholder="Nombre del responsable" [control]="encargado" [required]="true">
+                </app-input>
+
+                <div>
+                  <app-input label="Días y horarios de atención" name="diasHorarios" placeholder="Ej: Lunes a Viernes 9:00-18:00" [control]="diasHorarios">
+                </app-input>
+                <div class="space-y-3 mt-4">
+                  <label class="block text-sm font-bold text-black">
+                    ¿Cuenta con dispositivo móvil/computadora?
+                  </label>
+                  <div class="flex gap-6">
+                    <div class="flex items-center">
+                      <input
+                        type="radio"
+                        id="dispositivo-si"
+                        name="cuentaConDispositivo"
+                        [value]="true"
+                        [formControl]="cuentaConDispositivo"
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                      <label for="dispositivo-si" class="ml-2 block text-sm text-gray-900">
+                        Sí
+                      </label>
+                    </div>
+                    <div class="flex items-center">
+                      <input
+                        type="radio"
+                        id="dispositivo-no"
+                        name="cuentaConDispositivo"
+                        [value]="false"
+                        [formControl]="cuentaConDispositivo"
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                      <label for="dispositivo-no" class="ml-2 block text-sm text-gray-900">
+                        No
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                </div>
+
+
+                <!-- Población Vinculada -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-black mb-2">
+                    Población Vinculada
+                  </label>
+                  <div class="grid grid-cols-2 gap-2">
+                    @for (opcion of poblacionOpciones; track opcion.value) {
+                      <div class="flex items-center">
+                        <input
+                          type="checkbox"
+                          [id]="opcion.value"
+                          [checked]="isPoblacionSelected(opcion.value)"
+                          (change)="onPoblacionChange($event, opcion.value)"
+                          class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label [for]="opcion.value" class="ml-2 block text-sm text-gray-900">
+                          {{ opcion.label }}
+                        </label>
+                      </div>
+                    }
+                  </div>
+                  @if (poblacionVinculada.touched && poblacionVinculada.errors?.['required']) {
+                    <div class="text-red-500 text-sm font-medium mt-1">
+                      Selecciona al menos una opción
+                    </div>
+                  }
+                </div>
+                <div class="space-y-3">
+                  <label class="block text-sm font-bold text-black">
+                    ¿Cuenta con internet?
+                  </label>
+                  <div class="flex gap-6">
+                    <div class="flex items-center">
+                      <input
+                        type="radio"
+                        id="internet-si"
+                        name="cuentaConInternet"
+                        [value]="true"
+                        [formControl]="cuentaConInternet"
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                      <label for="internet-si" class="ml-2 block text-sm text-gray-900">
+                        Sí
+                      </label>
+                    </div>
+                    <div class="flex items-center">
+                      <input
+                        type="radio"
+                        id="internet-no"
+                        name="cuentaConInternet"
+                        [value]="false"
+                        [formControl]="cuentaConInternet"
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                      <label for="internet-no" class="ml-2 block text-sm text-gray-900">
+                        No
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cuenta con Dispositivo -->
+
+
+                <!-- Cuenta con Internet -->
+
+            </div>
+
+            <!-- Submit button -->
+            <div class="pt-4 flex flex-col md:flex-row md:justify-end">
+              <app-button
+                text="Siguiente"
+                [disabled]="formStep1.invalid || isLoading"
+                (clicked)="nextStep()"
+                class="w-auto">
+              </app-button>
+            </div>
+
+            <!-- Login link -->
+            <div class="flex justify-center items-center mt-6 px-3 flex-col md:flex-row">
+              <p class="text-sm text-gray-600 mt-2 md:mt-0">
+                ¿Ya tienes cuenta?
+                <a routerLink="/login"
+                   class="text-blue-600 hover:text-blue-700 font-semibold transition-colors duration-200 hover:underline ml-1">
+                  Iniciar sesión
+                </a>
+              </p>
+            </div>
+          }
+
+          @if ((stepper?.currentStep ?? 1) === 2) {
+            <!-- Lista de actividades agregadas -->
+            @if (actividades.length > 0) {
+              <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Actividades Registradas</h3>
+                <div class="space-y-3">
+                  @for (actividad of actividades; track actividad.nombre; let i = $index) {
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                      <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                          <div class="flex items-center gap-2 mb-2">
+                            <h4 class="font-medium text-gray-900">{{ actividad.nombre }}</h4>
+                            <span class="px-2 py-1 text-xs rounded-full {{ actividad.tipoActividad === 'principal' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
+                              {{ actividad.tipoActividad === 'principal' ? 'Principal' : 'Secundario' }}
+                            </span>
+                          </div>
+                          <p class="text-sm text-gray-600 mb-2 line-clamp-2">{{ actividad.descripcion }}</p>
+                          <div class="text-xs text-gray-500 space-y-1">
+                            <p><strong>Horarios:</strong> {{ actividad.diasHorarios }}</p>
+                            <p><strong>Confirmación:</strong>
+                              @switch (actividad.formaConfirmacion) {
+                                @case ('conversacion_previa') {
+                                  Conversación previa
+                                }
+                                @case ('whatsapp') {
+                                  Solo WhatsApp
+                                }
+                                @case ('abierta') {
+                                  Actividad abierta
+                                }
+                                @case ('otro') {
+                                  Otro
+                                }
+                              }
+                            </p>
+                          </div>
+                        </div>
+                        <div class="flex gap-2 ml-4">
+                          <button
+                            type="button"
+                            (click)="editarActividad(i)"
+                            class="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            (click)="eliminarActividad(i)"
+                            class="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Formulario para agregar/editar actividad -->
+            <div class="bg-gray-50 rounded-lg p-6 border-2 border-dashed border-gray-300">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">
+                  {{ actividadEditandoIndex !== null ? 'Editar Actividad' : 'Agregar Nueva Actividad' }}
+                </h3>
+                @if (actividadEditandoIndex !== null) {
+                  <button
+                    type="button"
+                    (click)="cancelarEdicion()"
+                    class="text-sm text-gray-600 hover:text-gray-800 underline">
+                    Cancelar edición
+                  </button>
+                }
+              </div>
+
+              <form [formGroup]="formStep2" class="space-y-6">
+
+                <!-- Nombre de la Actividad -->
+                <app-input
+                  label="Nombre de la Actividad"
+                  name="actividadNombre"
+                  placeholder="Ej: Taller de Arte, Clases de Matemáticas"
+                  [control]="actividadNombre" [required]="true">
+                </app-input>
+
+                <!-- Tipo de Actividad -->
+                <div class="space-y-3">
+                  <label class="block text-sm font-bold text-black">
+                    Tipo de Actividad
+                  </label>
+                  <div class="flex gap-6">
+                    @for (opcion of tipoActividadOpciones; track opcion.value) {
+                      <div class="flex items-center">
+                        <input
+                          type="radio"
+                          [id]="'tipo-' + opcion.value + (actividadEditandoIndex ?? 'new')"
+                          name="tipoActividad"
+                          [value]="opcion.value"
+                          [formControl]="tipoActividad"
+                          class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                        <label [for]="'tipo-' + opcion.value + (actividadEditandoIndex ?? 'new')" class="ml-2 block text-sm text-gray-900">
+                          {{ opcion.label }}
+                        </label>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Descripción -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-black">
+                    Descripción de lo que ofrece y a quién está dirigido
+                  </label>
+                  <textarea
+                    [formControl]="actividadDescripcion"
+                    rows="4"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    placeholder="Describe detalladamente la actividad, qué ofrece y a qué público está dirigida...">
+                  </textarea>
+                  @if (actividadDescripcion.touched && actividadDescripcion.errors?.['required']) {
+                    <div class="text-red-500 text-sm font-medium mt-1">
+                      La descripción es requerida
+                    </div>
+                  }
+                  @if (actividadDescripcion.touched && actividadDescripcion.errors?.['minlength']) {
+                    <div class="text-red-500 text-sm font-medium mt-1">
+                      La descripción debe tener al menos 10 caracteres
+                    </div>
+                  }
+                </div>
+
+                <!-- Días y Horarios -->
+                <app-input
+                  label="Días y Horarios"
+                  name="actividadDiasHorarios"
+                  placeholder="Ej: Lunes y Miércoles 14:00-16:00"
+                  [control]="actividadDiasHorarios">
+                </app-input>
+
+                <!-- Forma de Confirmación -->
+                <div class="space-y-3">
+                  <label class="block text-sm font-bold text-black">
+                    En caso de que referenciemos a una persona para que participe de esta actividad, ¿qué forma de confirmar que efectivamente puede participar proponen?
+                  </label>
+                  <div class="space-y-2">
+                    @for (opcion of formaConfirmacionOpciones; track opcion.value) {
+                      <div class="flex items-center">
+                        <input
+                          type="radio"
+                          [id]="'confirmacion-' + opcion.value + (actividadEditandoIndex ?? 'new')"
+                          name="formaConfirmacion"
+                          [value]="opcion.value"
+                          [formControl]="formaConfirmacion"
+                          class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                        <label [for]="'confirmacion-' + opcion.value + (actividadEditandoIndex ?? 'new')" class="ml-2 block text-sm text-gray-900">
+                          {{ opcion.label }}
+                        </label>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Botón agregar/editar -->
+                <div class="flex justify-center pt-4">
+                  <app-button
+                    [text]="actividadEditandoIndex !== null ? 'Actualizar Actividad' : 'Agregar Actividad'"
+                    variant="secondary"
+                    [disabled]="formStep2.invalid"
+                    (clicked)="agregarActividad()"
+                    class="w-auto">
+                  </app-button>
+                </div>
+
+              </form>
+            </div>
+
+            <!-- Mensaje si no hay actividades -->
+            <!-- @if (actividades.length === 0) {
+              <div class="text-center py-8">
+                <div class="text-gray-400 mb-2">
+                  <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                  </svg>
+                </div>
+                <p class="text-gray-600">No has agregado ninguna actividad aún</p>
+                <p class="text-sm text-gray-500 mt-1">Completa el formulario arriba para agregar tu primera actividad</p>
+              </div>
+            } -->
+
+            <!-- Buttons -->
+            <div class="flex flex-col sm:flex-row justify-end mt-6 space-y-3 sm:space-y-0 sm:space-x-3">
+              <app-button
+                text="Volver"
+                variant="outline"
+                (clicked)="previousStep()"
+                class="w-auto">
+              </app-button>
+              <app-button
+                text="Registrar Espacio"
+                [disabled]="isLoading"
+                (clicked)="onSubmit()"
+                class="w-auto">
+              </app-button>
+            </div>
+          }
+
+        </form>      </div>
+      <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+
+    </div>
+    <div class="text-center mt-6">
+      <p class="text-xs text-gray-500">
+        Conectando comunidades • Construyendo futuro
+      </p>
+    </div>
+
+    <!-- Loading Overlay -->
+    <app-loading-overlay
+      *ngIf="isLoading"
+      [fullscreen]="true"
+      message="Registrando espacio..."
+      size="lg">
+    </app-loading-overlay>
+
+  </div>
+
+</div>
