@@ -7,14 +7,21 @@ const mongoose = require('mongoose');
 const app = express();
 
 // Middlewares
-const allowedOrigins = [
+const defaultAllowedOrigins = [
   'http://localhost:4200',
+  'http://localhost:5173',
   'https://mp-front-end-black.vercel.app'
 ];
 
+const allowedOriginsFromEnv = (process.env.ALLOWED_ORIGINS || process.env.CORS_ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const allowedOrigins = allowedOriginsFromEnv.length ? allowedOriginsFromEnv : defaultAllowedOrigins;
+
 app.use(cors({
   origin: function(origin, callback) {
-
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {

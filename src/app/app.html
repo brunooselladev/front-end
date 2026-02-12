@@ -1,8 +1,0 @@
-<div class="main-layout">
-	<ng-container *ngIf="!isAuthPage(); else authPage">
-		<router-outlet />
-	</ng-container>
-	<ng-template #authPage>
-		<router-outlet />
-	</ng-template>
-</div>
