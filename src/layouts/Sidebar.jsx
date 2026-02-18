@@ -69,7 +69,7 @@ function Sidebar() {
                           <img src={item.icon} alt={item.label} />
                         </span>
                         <span className="sidebar__label">{item.label}</span>
-                        <span className={`sidebar__arrow${expanded ? ' rotated' : ''}`}>›</span>
+                        <span className={`sidebar__arrow${expanded ? ' rotated' : ''}`}>ï¿½</span>
                       </button>
                     </div>
                     <ul className={`sidebar__subsections${expanded ? ' expanded' : ''}`}>

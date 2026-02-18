@@ -101,9 +101,6 @@ export function LoginPage() {
               <Link to="/registro">Registrate</Link>
             </div>
 
-            <p className="page-meta auth-credentials">
-              Prueba: admin@test.com, agente@test.com, efector@test.com, referente@test.com, usmya@test.com.
-            </p>
           </div>
           <div className="auth-card__bar" />
         </section>
