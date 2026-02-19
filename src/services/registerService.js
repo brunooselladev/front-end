@@ -26,7 +26,7 @@ const buildUserPayload = (role, payload) => ({
 });
 
 export const registerService = {
-  
+
   async postEfector(efector) {
     if (!USE_MOCKS)
       return apiFetch('/user', {
@@ -110,7 +110,7 @@ export const registerService = {
       buildUserPayload('usmya', {
         ...usmya,
         email: usmya.email || `usmya.${Date.now()}@test.com`,
-      })
+      }),
     );
 
     if (usmya.password) {
@@ -196,7 +196,7 @@ export const registerService = {
           usmya: usmyaResponse.data,
         },
       },
-      520
+      520,
     );
   },
 
@@ -210,7 +210,7 @@ export const registerService = {
             address: `${espacio.direccion || espacio.address || ''}, ${espacio.barrio || espacio.neighborhood || ''}`
               .trim()
               .replace(/^,|,$/g, ''),
-          })
+          }),
         ),
       });
 

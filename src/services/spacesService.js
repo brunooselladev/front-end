@@ -65,7 +65,7 @@ export const espacioService = {
     if (!USE_MOCKS) return apiFetch(`/workspace?Name=${encodeURIComponent(nombre)}`);
     return withLatency(
       mockStore.read('espacios').filter((item) => matchesSearch(item.nombre, nombre)),
-      220
+      220,
     );
   },
 
@@ -89,7 +89,7 @@ export const espacioService = {
     }
     return withLatency(
       mockStore.read('espacios').filter((item) => (item.poblacionVinculada || []).includes(poblacion)),
-      220
+      220,
     );
   },
 };

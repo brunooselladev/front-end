@@ -757,9 +757,9 @@ export function AdminSpacesPage() {
     setError('');
     try {
       const data = await espacioService.getAllEspacios();
-      const ordered = [...(data || [])].sort((a, b) => 
-        new Date(b.registeredDate) - new Date(a.registeredDate)
-      );      
+      const ordered = [...(data || [])].sort((a, b) =>
+        new Date(b.registeredDate) - new Date(a.registeredDate),
+      );
       setSpaces(ordered);
     } catch (err) {
       setError(err.message || 'No se pudieron cargar los espacios.');
@@ -834,11 +834,9 @@ export function AdminSpacesPage() {
       title="Espacios"
       subtitle="Gestion de espacios e instituciones"
       actions={
-        <>
-          <button className="btn btn-primary" type="button" onClick={() => setEditing({})}>
+        <button className="btn btn-primary" type="button" onClick={() => setEditing({})}>
             Nuevo Espacio
           </button>
-        </>
       }
     >
       {/* Filtros */}
@@ -901,7 +899,7 @@ export function AdminSpacesPage() {
       )}
 
       {/* --- DRAWER: Ver Detalle --- */}
-      <div className={`drawer ${Boolean(selected && !showDelete) ? 'drawer--open' : ''}`}>
+      <div className={`drawer ${selected && !showDelete ? 'drawer--open' : ''}`}>
         <div className="drawer-header">
           <h2 className="drawer-title">Detalle de Espacio</h2>
           <button
@@ -1058,7 +1056,7 @@ export function AdminCalendarPage() {
   const HOURS = Array.from({ length: 13 }, (_, i) => i + 7); // 07:00–19:00
   const DAY_LABELS = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
 
-  const weekLabel = format(weekStart, "MMMM 'De' yyyy", { locale: es });
+  const weekLabel = format(weekStart, 'MMMM \'De\' yyyy', { locale: es });
 
   const prevWeek = () => setWeekStart(w => subWeeks(w, 1));
   const nextWeek = () => setWeekStart(w => addWeeks(w, 1));
@@ -1086,7 +1084,7 @@ export function AdminCalendarPage() {
         espacioService.getAllEspacios(),
       ]);
       const ordered = [...(weekActivities || [])].sort(
-        (a, b) => new Date(a.dia).getTime() - new Date(b.dia).getTime()
+        (a, b) => new Date(a.dia).getTime() - new Date(b.dia).getTime(),
       );
       setActivities(ordered);
       setSpaces(allSpaces || []);
@@ -1307,7 +1305,7 @@ export function AdminBenefitsPage() {
     return activities.filter(
       (item) =>
         String(item.nombre || '').toLowerCase().includes(term) ||
-        String(item.descripcion || '').toLowerCase().includes(term)
+        String(item.descripcion || '').toLowerCase().includes(term),
     );
   }, [activities, search]);
 

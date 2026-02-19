@@ -45,7 +45,7 @@ export function AssistancePage() {
               activityTime: `${activity.hora}${activity.horaFin ? ` - ${activity.horaFin}` : ''}`,
               confirmedParticipants: (assistances || []).length,
             };
-          })
+          }),
         );
         if (mounted) setRows(rowsData);
       } catch (err) {

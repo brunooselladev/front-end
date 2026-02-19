@@ -267,7 +267,7 @@ export function ProfileSpacePage() {
         activitiesService.getActivitiesByEspacioId(currentUser.idEspacio),
       ]);
       const visibleActivities = (spaceActivities || []).filter(
-        (item) => String(item.status || '').toLowerCase() !== 'rechazada'
+        (item) => String(item.status || '').toLowerCase() !== 'rechazada',
       );
       setSpace(spaceData);
       setActivities(visibleActivities);
@@ -630,7 +630,7 @@ export function EfectorPatientsPage() {
       (user) =>
         String(user.nombre || '').toLowerCase().includes(term) ||
         String(user.alias || '').toLowerCase().includes(term) ||
-        String(user.dni || '').toLowerCase().includes(term)
+        String(user.dni || '').toLowerCase().includes(term),
     );
   }, [patients, search]);
 
@@ -773,7 +773,7 @@ export function ReferenteCompanionsPage() {
       (user) =>
         String(user.nombre || '').toLowerCase().includes(term) ||
         String(user.alias || '').toLowerCase().includes(term) ||
-        String(user.dni || '').toLowerCase().includes(term)
+        String(user.dni || '').toLowerCase().includes(term),
     );
   }, [companions, search]);
 

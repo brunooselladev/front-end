@@ -53,7 +53,7 @@ export const activitiesService = {
     }
     return withLatency(
       mockStore.read('actividades').filter((a) => Number(a.espacioId) === Number(espacioId)),
-      220
+      220,
     );
   },
 
@@ -153,7 +153,7 @@ export const activitiesService = {
         (a) =>
           matchesSearch(a.nombre, query) ||
           matchesSearch(a.descripcion, query) ||
-          matchesSearch(a.responsable, query)
+          matchesSearch(a.responsable, query),
       );
     }
 
@@ -164,9 +164,9 @@ export const activitiesService = {
           (a) =>
             matchesSearch(a.nombre, query) ||
             matchesSearch(a.descripcion, query) ||
-            matchesSearch(a.responsable, query)
+            matchesSearch(a.responsable, query),
         ),
-      220
+      220,
     );
   },
 };

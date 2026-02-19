@@ -72,7 +72,7 @@ function TrajectoryTimeline({ usmyaId, title, subtitle, canCreateNotes }) {
       });
 
       const merged = [...assistanceItems, ...notesItems].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
       );
 
       setItems(merged);

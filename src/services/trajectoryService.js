@@ -12,7 +12,7 @@ export const notasTrayectoriaService = {
     if (!USE_MOCKS) unsupportedByContract('Trayectoria API no definida en Swagger');
     return withLatency(
       mockStore.read('notasTrayectoria').filter((item) => Number(item.idUsmya) === Number(usmyaId)),
-      220
+      220,
     );
   },
 
@@ -20,7 +20,7 @@ export const notasTrayectoriaService = {
     if (!USE_MOCKS) unsupportedByContract('Trayectoria API no definida en Swagger');
     return withLatency(
       mockStore.read('notasTrayectoria').filter((item) => Number(item.idActor) === Number(actorId)),
-      220
+      220,
     );
   },
 

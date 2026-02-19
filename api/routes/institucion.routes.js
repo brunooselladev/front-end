@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
       actividadEspacio,
       coordenadas,
       cuentaConInternet,
-      cuentaConDispositivo
+      cuentaConDispositivo,
     } = req.body;
 
     if (!nombre || !telefono || !encargado) {
@@ -40,14 +40,14 @@ router.post('/', async (req, res) => {
       actividadEspacio,
       coordenadas,
       cuentaConInternet,
-      cuentaConDispositivo
+      cuentaConDispositivo,
     });
 
     const institucionGuardada = await nuevaInstitucion.save();
 
     res.status(201).json({
       message: 'Institución registrada exitosamente.',
-      data: institucionGuardada
+      data: institucionGuardada,
     });
 
   } catch (error) {
@@ -58,8 +58,8 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
 
-  res.status(200).json({bruno: 'hola'})
-  
+  res.status(200).json({ bruno: 'hola' });
+
 });
 
 module.exports = router;

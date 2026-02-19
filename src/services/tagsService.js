@@ -14,7 +14,7 @@ export const tagsService = {
       mockStore
         .read('tags')
         .filter((tag) => matchesSearch(tag.nombre, query) || matchesSearch(tag.descripcion, query)),
-      220
+      220,
     );
   },
 

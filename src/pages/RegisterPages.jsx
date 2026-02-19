@@ -400,12 +400,12 @@ export function NeedHelpUsmyaPage() {
   const handleNextStep1 = (e) => {
     e.preventDefault();
     setError('');
-    
+
     if (!canContinueStep1) {
       setError('Completá todos los campos obligatorios del paso 1.');
       return;
     }
-    
+
     setStep(2);
   };
 
@@ -907,7 +907,7 @@ export function SpaceRegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [ok, setOk] = useState('');
-  
+
   const [spaceForm, setSpaceForm] = useState({
     nombre: '',
     telefono: '',

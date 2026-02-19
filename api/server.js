@@ -10,7 +10,7 @@ const app = express();
 const defaultAllowedOrigins = [
   'http://localhost:4200',
   'http://localhost:5173',
-  'https://mp-front-end-black.vercel.app'
+  'https://mp-front-end-black.vercel.app',
 ];
 
 const allowedOriginsFromEnv = (process.env.ALLOWED_ORIGINS || process.env.CORS_ALLOWED_ORIGINS || '')
@@ -28,7 +28,7 @@ app.use(cors({
       callback(new Error('No permitido por CORS'));
     }
   },
-  credentials: true
+  credentials: true,
 }));
 
 app.use(express.json());

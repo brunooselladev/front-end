@@ -291,7 +291,7 @@ export function ActivitiesEditor({ selectedIds = [], onSave, disabled }) {
   const toggle = (activityId) => () => {
     if (disabled) return;
     setSelected((prev) =>
-      prev.includes(activityId) ? prev.filter((item) => item !== activityId) : [...prev, activityId]
+      prev.includes(activityId) ? prev.filter((item) => item !== activityId) : [...prev, activityId],
     );
   };
 
@@ -341,5 +341,4 @@ export function UserTabs({ tabs, activeTab, onChange }) {
     </div>
   );
 }
-
 

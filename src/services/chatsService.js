@@ -60,7 +60,7 @@ export const integrantesChatService = {
     if (!USE_MOCKS) unsupportedByContract('Chat members API no definida en Swagger');
     return withLatency(
       mockStore.read('integrantesChat').filter((item) => Number(item.idChat) === Number(chatId)),
-      220
+      220,
     );
   },
 
@@ -68,7 +68,7 @@ export const integrantesChatService = {
     if (!USE_MOCKS) unsupportedByContract('Chat members API no definida en Swagger');
     return withLatency(
       mockStore.read('integrantesChat').filter((item) => Number(item.idUser) === Number(userId)),
-      220
+      220,
     );
   },
 

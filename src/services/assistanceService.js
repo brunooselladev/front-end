@@ -17,7 +17,7 @@ export const asistenciaService = {
     if (!USE_MOCKS) unsupportedByContract('Asistencia API no definida en Swagger');
     return withLatency(
       mockStore.read('asistencias').filter((a) => Number(a.idActividad) === Number(actividadId)),
-      220
+      220,
     );
   },
 

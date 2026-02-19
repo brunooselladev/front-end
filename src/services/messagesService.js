@@ -17,7 +17,7 @@ export const mensajeService = {
     if (!USE_MOCKS) unsupportedByContract('Messages API no definida en Swagger');
     return withLatency(
       mockStore.read('mensajes').filter((message) => Number(message.idChat) === Number(chatId)),
-      220
+      220,
     );
   },
 
@@ -35,7 +35,7 @@ export const mensajeService = {
     if (!USE_MOCKS) unsupportedByContract('Messages API no definida en Swagger');
     return withLatency(
       mockStore.read('mensajes').filter((message) => Number(message.idEmisor) === Number(emisorId)),
-      220
+      220,
     );
   },
 

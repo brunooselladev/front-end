@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
 
-
 const actividadEspacioSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
   tipoActividad: { type: String, enum: ['principal', 'secundario'], required: true },
   descripcion: { type: String },
   diasHorarios: { type: String },
-  formaConfirmacion: { type: String, enum: ['conversacion_previa', 'whatsapp', 'abierta', 'otro'] }
+  formaConfirmacion: { type: String, enum: ['conversacion_previa', 'whatsapp', 'abierta', 'otro'] },
 }, { _id: false });
 
 const institucionSchema = new mongoose.Schema({
@@ -21,13 +20,13 @@ const institucionSchema = new mongoose.Schema({
   actividadEspacio: [actividadEspacioSchema],
   coordenadas: {
     lat: { type: Number },
-    lng: { type: Number }
+    lng: { type: Number },
   },
   cuentaConInternet: { type: Boolean },
   cuentaConDispositivo: { type: Boolean },
-  fechaRegistro: { type: Date, default: Date.now }
+  fechaRegistro: { type: Date, default: Date.now },
 }, {
-  timestamps: true
+  timestamps: true,
 });
 
 const Institucion = mongoose.model('Institucion', institucionSchema);

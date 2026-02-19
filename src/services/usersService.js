@@ -43,7 +43,7 @@ export const usuarioService = {
     }
     return withLatency(mockStore.read('users').filter((u) => u.isVerified === 'pendiente'), 350);
   },
-  
+
   async getUsersByRole(role) {
     if (!USE_MOCKS) {
       const data = await apiFetch(`/user?Role=${encodeURIComponent(role)}&pageNumber=1&pageSize=100`);

@@ -17,7 +17,7 @@ export const referenteUsmyaService = {
     if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(
       mockStore.read('referenteUsmya').filter((item) => Number(item.idReferente) === Number(idReferente)),
-      220
+      220,
     );
   },
 
@@ -40,7 +40,7 @@ export const referenteUsmyaService = {
     if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(
       mockStore.read('referenteUsmya').filter((item) => Number(item.idUsmya) === Number(idUsmya)),
-      220
+      220,
     );
   },
 };
@@ -55,7 +55,7 @@ export const efectorUsmyaService = {
     if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(
       mockStore.read('efectorUsmya').filter((item) => Number(item.idUsmya) === Number(usmyaId)),
-      220
+      220,
     );
   },
 
@@ -63,7 +63,7 @@ export const efectorUsmyaService = {
     if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(
       mockStore.read('efectorUsmya').filter((item) => Number(item.idEfector) === Number(efectorId)),
-      220
+      220,
     );
   },
 

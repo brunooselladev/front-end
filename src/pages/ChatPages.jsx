@@ -112,7 +112,7 @@ export function ChatListPage() {
             usmyaAlias: usmya?.alias || '',
             lastMessage,
           };
-        })
+        }),
       );
 
       setChats(enriched);
@@ -264,7 +264,7 @@ export function ChatMessagesPage() {
       ]);
 
       const users = await Promise.all(
-        (membersLinks || []).map((member) => usuarioService.getUserById(member.idUser))
+        (membersLinks || []).map((member) => usuarioService.getUserById(member.idUser)),
       );
 
       setChat(chatData);

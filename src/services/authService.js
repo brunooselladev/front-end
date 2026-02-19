@@ -43,7 +43,7 @@ export const authService = {
     const users = mockStore.read('users');
 
     const authUser = authUsers.find(
-      (item) => item.email === data.email && item.password === data.password
+      (item) => item.email === data.email && item.password === data.password,
     );
 
     if (!authUser) {
@@ -77,7 +77,7 @@ export const authService = {
           token,
         },
       },
-      800
+      800,
     );
   },
 };
