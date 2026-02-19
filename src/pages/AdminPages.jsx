@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import EntityTable from '../components/EntityTable';
 import LoadingOverlay from '../components/LoadingOverlay';
@@ -472,28 +472,146 @@ export function AdminNotificationsPage() {
         ))}
       </div>
 
-      {/* Modal detalle */}
-      <Modal open={Boolean(selectedUser)} title="Detalle de solicitud" onClose={() => setSelectedUser(null)}>
-        {selectedUser ? (
-          <div className="grid">
-            <p><strong>Nombre:</strong> {selectedUser.nombre}</p>
-            <p><strong>Rol:</strong> {roleLabel[selectedUser.role] || selectedUser.role}</p>
-            <p><strong>Email:</strong> {selectedUser.email || '-'}</p>
-            <p><strong>DNI:</strong> {selectedUser.dni || '-'}</p>
-            <p><strong>Telefono:</strong> {selectedUser.telefono || '-'}</p>
-            <p><strong>Direccion:</strong> {selectedUser.direccionResidencia || selectedUser.address || '-'}</p>
-            {selectedUser.idEspacio ? (
-              <p><strong>Espacio:</strong> {spacesMap.get(Number(selectedUser.idEspacio)) || `Espacio ${selectedUser.idEspacio}`}</p>
-            ) : null}
-            {selectedRelation.usmya ? (
-              <p><strong>USMYA asociado:</strong> {selectedRelation.usmya.nombre}</p>
-            ) : null}
-            {selectedRelation.creador ? (
-              <p><strong>Creador:</strong> {selectedRelation.creador.nombre} ({roleLabel[selectedRelation.creador.role]})</p>
-            ) : null}
+      {/* Drawer overlay */}
+      {Boolean(selectedUser) && (
+        <div className="drawer-overlay" onClick={() => setSelectedUser(null)} />
+      )}
+
+      {/* Drawer detalle */}
+      <div className={`drawer ${selectedUser ? 'drawer--open' : ''}`}>
+        <div className="drawer-header">
+          <h2 className="drawer-title">Detalles del Usuario</h2>
+          <button className="drawer-close" type="button" onClick={() => setSelectedUser(null)}>×</button>
+        </div>
+
+        {selectedUser && (
+          <div className="drawer-body">
+            {/* Información Personal */}
+            <section className="detail-section">
+              <h3 className="detail-section-title" style={{ color: '#2563eb' }}>Información Personal</h3>
+              <div className="detail-row">
+                <span className="detail-label">Nombre:</span>
+                <span className="detail-value">{selectedUser.nombre}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Email:</span>
+                <span className="detail-value">{selectedUser.email || '-'}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Teléfono:</span>
+                <span className="detail-value">{selectedUser.telefono || '-'}</span>
+              </div>
+              {selectedUser.dni ? (
+                <div className="detail-row">
+                  <span className="detail-label">DNI:</span>
+                  <span className="detail-value">{selectedUser.dni}</span>
+                </div>
+              ) : null}
+              {(selectedUser.direccionResidencia || selectedUser.address) ? (
+                <div className="detail-row">
+                  <span className="detail-label">Dirección:</span>
+                  <span className="detail-value">{selectedUser.direccionResidencia || selectedUser.address}</span>
+                </div>
+              ) : null}
+            </section>
+
+            {/* Información Profesional */}
+            {(selectedUser.idEspacio || selectedRelation.usmya || selectedRelation.creador) && (
+              <section className="detail-section">
+                <h3 className="detail-section-title" style={{ color: '#2563eb' }}>Información Profesional</h3>
+                {selectedUser.idEspacio ? (
+                  <div className="detail-row">
+                    <span className="detail-label">Espacio:</span>
+                    <span className="detail-value">
+                      {spacesMap.get(Number(selectedUser.idEspacio)) || `Espacio ${selectedUser.idEspacio}`}
+                    </span>
+                  </div>
+                ) : null}
+                {selectedRelation.usmya ? (
+                  <div className="detail-row">
+                    <span className="detail-label">USMYA asociado:</span>
+                    <span className="detail-value">{selectedRelation.usmya.nombre}</span>
+                  </div>
+                ) : null}
+                {selectedRelation.creador ? (
+                  <div className="detail-row">
+                    <span className="detail-label">Creador:</span>
+                    <span className="detail-value">
+                      {selectedRelation.creador.nombre} ({roleLabel[selectedRelation.creador.role]})
+                    </span>
+                  </div>
+                ) : null}
+              </section>
+            )}
+
+            {/* Estado de Registro */}
+            <section className="detail-section">
+              <h3 className="detail-section-title" style={{ color: '#2563eb' }}>Estado de Registro</h3>
+              <div className="detail-row">
+                <span className="detail-label">Rol:</span>
+                <span style={{
+                  background: '#dbeafe',
+                  color: '#1d4ed8',
+                  borderRadius: '999px',
+                  padding: '2px 14px',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                }}>
+                  {roleLabel[selectedUser.role] || selectedUser.role}
+                </span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Estado:</span>
+                <span style={{ color: '#c2410c', fontWeight: '600', fontSize: '14px' }}>
+                  Pendiente de aprobación
+                </span>
+              </div>
+            </section>
+
+            {/* Acciones */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '8px' }}>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => approveUser(selectedUser.id)}
+                disabled={working}
+                style={{
+                  background: '#16a34a',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  width: '100%',
+                }}
+              >
+                ✓ Aprobar Usuario
+              </button>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => rejectUser(selectedUser.id)}
+                disabled={working}
+                style={{
+                  background: '#dc2626',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  width: '100%',
+                }}
+              >
+                ✕ Rechazar Usuario
+              </button>
+            </div>
           </div>
-        ) : null}
-      </Modal>
+        )}
+      </div>
 
       {(loading || working) && <LoadingOverlay message="Procesando notificaciones..." />}
     </PageShell>
@@ -719,22 +837,100 @@ export function AdminNotificationsActivitiesPage() {
         ))}
       </div>
 
-      {/* Modal detalle */}
-      <Modal open={Boolean(selected)} title="Detalle de actividad" onClose={() => setSelected(null)}>
-        {selected ? (
-          <div className="grid">
-            <p><strong>Nombre:</strong> {selected.nombre}</p>
-            <p><strong>Descripcion:</strong> {selected.descripcion}</p>
-            <p><strong>Fecha:</strong> {formatDate(selected.dia)}</p>
-            <p><strong>Horario:</strong> {selected.hora} {selected.horaFin ? `- ${selected.horaFin}` : ''}</p>
-            <p><strong>Responsable:</strong> {selected.responsable}</p>
-            <p><strong>Espacio:</strong> {spacesMap.get(Number(selected.espacioId)) || `Espacio ${selected.espacioId}`}</p>
-            <p><strong>Lugar:</strong> {selected.lugar || '-'}</p>
-            <p><strong>Es fija:</strong> {boolLabel(selected.esFija)}</p>
-            <p><strong>Estado:</strong> {getStatusMeta(selected.status).label}</p>
+      {/* Drawer overlay */}
+      {Boolean(selected) && (
+        <div className="drawer-overlay" onClick={() => setSelected(null)} />
+      )}
+
+      {/* Drawer detalle actividad */}
+      <div className={`drawer ${selected ? 'drawer--open' : ''}`}>
+        <div className="drawer-header">
+          <h2 className="drawer-title">Detalle de actividad</h2>
+          <button className="drawer-close" type="button" onClick={() => setSelected(null)}>×</button>
+        </div>
+
+        {selected && (
+          <div className="drawer-body">
+            <section className="detail-section">
+              <h3 className="detail-section-title" style={{ color: '#2563eb' }}>Información General</h3>
+              <div className="detail-row">
+                <span className="detail-label">Nombre:</span>
+                <span className="detail-value">{selected.nombre}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Fecha:</span>
+                <span className="detail-value">{formatDate(selected.dia)}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Horario:</span>
+                <span className="detail-value">{selected.hora}{selected.horaFin ? ` - ${selected.horaFin}` : ''}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Responsable:</span>
+                <span className="detail-value">{selected.responsable || '-'}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Espacio:</span>
+                <span className="detail-value">{spacesMap.get(Number(selected.espacioId)) || `Espacio ${selected.espacioId}`}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Lugar:</span>
+                <span className="detail-value">{selected.lugar || '-'}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Tipo:</span>
+                <span className="detail-value">{selected.esFija ? 'Fija' : 'Eventual'}</span>
+              </div>
+            </section>
+
+            <section className="detail-section">
+              <h3 className="detail-section-title" style={{ color: '#2563eb' }}>Estado</h3>
+              <div className="detail-row">
+                <span className="detail-label">Estado:</span>
+                <span style={{
+                  background: getStatusMeta(selected.status).background,
+                  color: getStatusMeta(selected.status).color,
+                  border: `1px solid ${getStatusMeta(selected.status).border}`,
+                  borderRadius: '999px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  padding: '2px 10px',
+                }}>
+                  {getStatusMeta(selected.status).label}
+                </span>
+              </div>
+            </section>
+
+            {selected.descripcion && (
+              <section className="detail-section">
+                <h3 className="detail-section-title" style={{ color: '#2563eb' }}>Descripción</h3>
+                <p style={{ fontSize: '14px', color: '#4a5578', lineHeight: '1.6', margin: 0 }}>{selected.descripcion}</p>
+              </section>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '8px' }}>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => approve(selected.id)}
+                disabled={working}
+                style={{ background: '#16a34a', color: '#fff', border: 'none', borderRadius: '8px', padding: '12px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', width: '100%' }}
+              >
+                ✓ Aprobar Actividad
+              </button>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => reject(selected.id)}
+                disabled={working}
+                style={{ background: '#dc2626', color: '#fff', border: 'none', borderRadius: '8px', padding: '12px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', width: '100%' }}
+              >
+                ✕ Rechazar Actividad
+              </button>
+            </div>
           </div>
-        ) : null}
-      </Modal>
+        )}
+      </div>
 
       {(loading || working) && <LoadingOverlay message="Procesando actividades..." />}
     </PageShell>
@@ -1257,19 +1453,57 @@ export function AdminCalendarPage() {
         </div>
       </div>
 
-      {/* Modal detalle */}
-      <Modal open={Boolean(selected)} title="Detalle de actividad" onClose={() => setSelected(null)}>
-        {selected ? (
-          <div className="grid">
-            <p><strong>Nombre:</strong> {selected.nombre}</p>
-            <p><strong>Descripcion:</strong> {selected.descripcion}</p>
-            <p><strong>Fecha:</strong> {formatDate(selected.dia)}</p>
-            <p><strong>Horario:</strong> {selected.hora} {selected.horaFin ? `- ${selected.horaFin}` : ''}</p>
-            <p><strong>Espacio:</strong> {spacesMap.get(Number(selected.espacioId)) || '-'}</p>
-            <p><strong>Responsable:</strong> {selected.responsable}</p>
+      {/* Drawer overlay */}
+      {Boolean(selected) && (
+        <div className="drawer-overlay" onClick={() => setSelected(null)} />
+      )}
+
+      {/* Drawer detalle actividad */}
+      <div className={`drawer ${selected ? 'drawer--open' : ''}`}>
+        <div className="drawer-header">
+          <h2 className="drawer-title">Detalle de actividad</h2>
+          <button className="drawer-close" type="button" onClick={() => setSelected(null)}>×</button>
+        </div>
+
+        {selected && (
+          <div className="drawer-body">
+            <section className="detail-section">
+              <h3 className="detail-section-title" style={{ color: '#2563eb' }}>Información General</h3>
+              <div className="detail-row">
+                <span className="detail-label">Nombre:</span>
+                <span className="detail-value">{selected.nombre}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Fecha:</span>
+                <span className="detail-value">{formatDate(selected.dia)}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Horario:</span>
+                <span className="detail-value">{selected.hora}{selected.horaFin ? ` - ${selected.horaFin}` : ''}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Espacio:</span>
+                <span className="detail-value">{spacesMap.get(Number(selected.espacioId)) || '-'}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Responsable:</span>
+                <span className="detail-value">{selected.responsable || '-'}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Tipo:</span>
+                <span className="detail-value">{selected.esFija ? 'Fija' : 'Eventual'}</span>
+              </div>
+            </section>
+
+            {selected.descripcion && (
+              <section className="detail-section">
+                <h3 className="detail-section-title" style={{ color: '#2563eb' }}>Descripción</h3>
+                <p style={{ fontSize: '14px', color: '#4a5578', lineHeight: '1.6', margin: 0 }}>{selected.descripcion}</p>
+              </section>
+            )}
           </div>
-        ) : null}
-      </Modal>
+        )}
+      </div>
 
       {loading && <LoadingOverlay message="Cargando calendario..." />}
     </PageShell>

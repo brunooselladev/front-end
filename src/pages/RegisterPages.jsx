@@ -175,12 +175,9 @@ function BasicPersonForm({ onSubmit, includeSpace = false, includeProfessional =
       {error ? <p className="error-text">{error}</p> : null}
       {ok ? <p className="success-text">{ok}</p> : null}
 
-      <div className="actions-row">
-        <button className="btn btn-primary" type="submit" disabled={isLoading}>
+      <div className="actions-row" style={{ justifyContent: 'flex-end' }}>
+        <button className="btn btn-primary" type="submit" disabled={!canSubmit || isLoading}>
           Registrar
-        </button>
-        <button className="btn" type="button" onClick={() => navigate('/registro')}>
-          Volver
         </button>
       </div>
 
@@ -193,26 +190,22 @@ export function RegisterLandingPage() {
   return (
     <RegisterWrapper title="¿Cómo quieres participar en la red?" subtitle="Elige una opción">
       <div className="register-choices">
-        <article className="card register-choice-card">
+        <Link to="/registro/necesito-ayuda" className="card register-choice-card" style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className="register-choice-card__icon">
             <img src="/assets/need-help.svg" alt="Necesito ayuda" />
           </div>
           <h3>Necesito ayuda</h3>
           <p>Quiero pedir acompañamiento</p>
-          <Link to="/registro/necesito-ayuda" style={{ textDecoration: 'none' }}>
-            <span style={{ fontSize: '24px', color: '#26a69a' }}>→</span>
-          </Link>
-        </article>
-        <article className="card register-choice-card">
+          <span className="register-choice-card__arrow">→</span>
+        </Link>
+        <Link to="/registro/ofrezco-ayuda" className="card register-choice-card" style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className="register-choice-card__icon">
             <img src="/assets/offer-help.svg" alt="Ofrezco ayuda" />
           </div>
           <h3>Ofrezco ayuda</h3>
           <p>Quiero sumarme a la red</p>
-          <Link to="/registro/ofrezco-ayuda" style={{ textDecoration: 'none' }}>
-            <span style={{ fontSize: '24px', color: '#26a69a' }}>→</span>
-          </Link>
-        </article>
+          <span className="register-choice-card__arrow">→</span>
+        </Link>
       </div>
     </RegisterWrapper>
   );
@@ -222,26 +215,22 @@ export function NeedHelpPage() {
   return (
     <RegisterWrapper title="Necesito ayuda" subtitle="¿Para vos o para otra persona?">
       <div className="register-choices">
-        <article className="card register-choice-card">
+        <Link to="/registro/necesito-ayuda/usmya" className="card register-choice-card" style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className="register-choice-card__icon">
             <img src="/assets/need-help.svg" alt="Para mi" />
           </div>
           <h3>Para mi</h3>
           <p>Registro en 2 pasos</p>
-          <Link to="/registro/necesito-ayuda/usmya" style={{ textDecoration: 'none' }}>
-            <span style={{ fontSize: '24px', color: '#26a69a' }}>→</span>
-          </Link>
-        </article>
-        <article className="card register-choice-card">
+          <span className="register-choice-card__arrow">→</span>
+        </Link>
+        <Link to="/registro/necesito-ayuda/otro" className="card register-choice-card" style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className="register-choice-card__icon">
             <img src="/assets/offer-help.svg" alt="Para otra persona" />
           </div>
           <h3>Para otra persona</h3>
           <p>Alta de referente + persona</p>
-          <Link to="/registro/necesito-ayuda/otro" style={{ textDecoration: 'none' }}>
-            <span style={{ fontSize: '24px', color: '#26a69a' }}>→</span>
-          </Link>
-        </article>
+          <span className="register-choice-card__arrow">→</span>
+        </Link>
       </div>
     </RegisterWrapper>
   );
@@ -251,46 +240,38 @@ export function OfferHelpPage() {
   return (
     <RegisterWrapper title="Ofrezco ayuda" subtitle="Eligi tu rol para completar el formulario">
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
-        <article className="card register-choice-card">
+        <Link to="/registro/ofrezco-ayuda/efector-salud" className="card register-choice-card" style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className="register-choice-card__icon">
             <img src="/assets/efector-salud.svg" alt="Soy efector de salud" />
           </div>
           <h3>Soy efector de salud</h3>
           <p>Profesional de la salud</p>
-          <Link to="/registro/ofrezco-ayuda/efector-salud" style={{ textDecoration: 'none' }}>
-            <span style={{ fontSize: '24px', color: '#26a69a' }}>→</span>
-          </Link>
-        </article>
-        <article className="card register-choice-card">
+          <span className="register-choice-card__arrow">→</span>
+        </Link>
+        <Link to="/registro/ofrezco-ayuda/agente-comunitario" className="card register-choice-card" style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className="register-choice-card__icon">
             <img src="/assets/agente-com.svg" alt="Soy agente comunitario" />
           </div>
           <h3>Soy agente comunitario</h3>
           <p>Trabajador comunitario</p>
-          <Link to="/registro/ofrezco-ayuda/agente-comunitario" style={{ textDecoration: 'none' }}>
-            <span style={{ fontSize: '24px', color: '#26a69a' }}>→</span>
-          </Link>
-        </article>
-        <article className="card register-choice-card">
+          <span className="register-choice-card__arrow">→</span>
+        </Link>
+        <Link to="/registro/ofrezco-ayuda/referente-afectivo" className="card register-choice-card" style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className="register-choice-card__icon">
             <img src="/assets/ref-afectivo.svg" alt="Soy referente afectivo" />
           </div>
           <h3>Soy referente afectivo</h3>
           <p>Apoyo emocional y afectivo</p>
-          <Link to="/registro/ofrezco-ayuda/referente-afectivo" style={{ textDecoration: 'none' }}>
-            <span style={{ fontSize: '24px', color: '#26a69a' }}>→</span>
-          </Link>
-        </article>
-        <article className="card register-choice-card">
+          <span className="register-choice-card__arrow">→</span>
+        </Link>
+        <Link to="/registro/ofrezco-ayuda/mi-institucion" className="card register-choice-card" style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className="register-choice-card__icon">
             <img src="/assets/espacios.svg" alt="Registrar mi institución" />
           </div>
           <h3>Registrar mi institución</h3>
           <p>Completá la información de tu institución.</p>
-          <Link to="/registro/ofrezco-ayuda/mi-institucion" style={{ textDecoration: 'none' }}>
-            <span style={{ fontSize: '24px', color: '#26a69a' }}>→</span>
-          </Link>
-        </article>
+          <span className="register-choice-card__arrow">→</span>
+        </Link>
       </div>
     </RegisterWrapper>
   );
@@ -527,7 +508,7 @@ export function NeedHelpUsmyaPage() {
           {error ? <p className="error-text">{error}</p> : null}
 
           <div className="actions-row" style={{ justifyContent: 'flex-end', gap: '12px' }}>
-            <button className="btn btn-primary" type="submit" disabled={isLoading}>
+            <button className="btn btn-primary" type="submit" disabled={!canContinueStep1}>
               Siguiente
             </button>
           </div>
@@ -597,7 +578,7 @@ export function NeedHelpUsmyaPage() {
             <button className="btn" type="button" onClick={handleBackStep2}>
               Anterior
             </button>
-            <button className="btn btn-primary" type="submit" disabled={isLoading}>
+            <button className="btn btn-primary" type="submit" disabled={!canContinueStep1 || !form.estadoCivil || isLoading}>
               Registrarse
             </button>
           </div>
@@ -654,6 +635,11 @@ export function NeedHelpOtherPage() {
     form.referenteEmail.trim() &&
     form.referenteTelefono.trim() &&
     form.referentePassword.trim();
+
+  const canSubmitStep2 =
+    form.usmyaNombre.trim() &&
+    form.usmyaLastname.trim() &&
+    form.usmyaDni.trim();
 
   const handleNextStep1 = (e) => {
     e.preventDefault();
@@ -803,7 +789,7 @@ export function NeedHelpOtherPage() {
           {error ? <p className="error-text">{error}</p> : null}
 
           <div className="actions-row" style={{ justifyContent: 'flex-end', gap: '12px' }}>
-            <button className="btn btn-primary" type="submit">
+            <button className="btn btn-primary" type="submit" disabled={!canContinueStep1}>
               Siguiente
             </button>
           </div>
@@ -872,7 +858,7 @@ export function NeedHelpOtherPage() {
             <button className="btn" type="button" onClick={handleBackStep2}>
               Anterior
             </button>
-            <button className="btn btn-primary" type="submit" disabled={isLoading}>
+            <button className="btn btn-primary" type="submit" disabled={!canSubmitStep2 || isLoading}>
               Registrar
             </button>
           </div>
@@ -969,6 +955,16 @@ export function SpaceRegisterPage() {
     const value = event.target.type === 'radio' ? event.target.value : event.target.value;
     setActivityForm((prev) => ({ ...prev, [key]: value }));
   };
+
+  const canContinueStep1 =
+    spaceForm.nombre.trim() &&
+    spaceForm.telefono.trim() &&
+    spaceForm.encargado.trim();
+
+  const canAddActivity =
+    activityForm.nombre.trim() &&
+    activityForm.diasHorarios.trim() &&
+    activityForm.descripcion.trim();
 
   const handleNextStep1 = (e) => {
     e.preventDefault();
@@ -1211,7 +1207,7 @@ export function SpaceRegisterPage() {
           {error ? <p className="error-text">{error}</p> : null}
 
           <div className="actions-row" style={{ justifyContent: 'flex-end', gap: '12px' }}>
-            <button className="btn btn-primary" type="submit">
+            <button className="btn btn-primary" type="submit" disabled={!canContinueStep1}>
               Siguiente
             </button>
           </div>
@@ -1311,7 +1307,7 @@ export function SpaceRegisterPage() {
             {error ? <p className="error-text">{error}</p> : null}
 
             <div className="actions-row" style={{ justifyContent: 'center', gap: '12px' }}>
-              <button className="btn btn-primary" type="button" onClick={addActivity}>
+              <button className="btn btn-primary" type="button" onClick={addActivity} disabled={!canAddActivity}>
                 Agregar Actividad
               </button>
             </div>
@@ -1356,10 +1352,7 @@ export function SpaceRegisterPage() {
 
           {ok ? <p className="success-text">{ok}</p> : null}
 
-          <div className="actions-row" style={{ justifyContent: 'space-between', gap: '12px' }}>
-            <button className="btn" type="button" onClick={handleBackStep2}>
-              Volver
-            </button>
+          <div className="actions-row" style={{ justifyContent: 'flex-end', gap: '12px' }}>
             <button className="btn btn-primary" type="submit" disabled={isLoading}>
               Registrar Espacio
             </button>
