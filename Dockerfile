@@ -1,4 +1,4 @@
-# Stage 1: Build the Angular application
+# Stage 1: Build the React application
 FROM node:20-alpine AS build
 
 WORKDIR /app
@@ -13,7 +13,7 @@ RUN npm ci
 COPY . .
 
 # Build the application for production
-RUN npm run build -- --configuration production
+RUN npm run build
 
 # Stage 2: Serve the application with Nginx
 FROM nginx:alpine
@@ -22,7 +22,7 @@ FROM nginx:alpine
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy built application from build stage
-COPY --from=build /app/dist/front/browser /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 # Expose port 80
 EXPOSE 80
