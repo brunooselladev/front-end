@@ -1192,17 +1192,19 @@ export function SpaceRegisterPage() {
               </label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {confirmacionParticipacionOptions.map((option) => (
-                  <label key={option.value} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', cursor: 'pointer' }}>
+                  <div key={option.value} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <input
                       type="radio"
                       name="confirmacion"
                       value={option.value}
                       checked={activityForm.confirmacionParticipacion === option.value}
                       onChange={changeActivity('confirmacionParticipacion')}
-                      style={{ marginTop: '4px' }}
+                      style={{ width: 'auto', minWidth: 'unset', padding: 0, border: 'none', boxShadow: 'none', borderRadius: 0 }}
                     />
-                    <span>{option.label}</span>
-                  </label>
+                    <label style={{ cursor: 'pointer', margin: 0 }}>
+                      {option.label}
+                    </label>
+                  </div>
                 ))}
               </div>
             </div>

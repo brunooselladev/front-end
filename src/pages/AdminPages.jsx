@@ -80,14 +80,19 @@ function SpaceForm({ initialValue, onSubmit, onCancel, isSaving }) {
       return;
     }
 
+    const addressParts = [form.direccion.trim(), form.barrio.trim()].filter(Boolean);
+
     onSubmit({
-      // Mapeo del objeto del frontend al DTO que espera el backend.
       name: form.nombre.trim(),
       nationalId: form.nationalId.trim(),
       phoneNumber: form.telefono.trim(),
-      address: form.direccion.trim(),
+      address: addressParts.join(', '),
       assignee: form.encargado.trim(),
       type: form.tipoOrganizacion,
+      categories: form.poblacionVinculada,
+      hours: form.diasHorarios.trim(),
+      mainActivity: form.actividadesPrincipales.trim(),
+      secondaryActivity: form.actividadesSecundarias.trim(),
     });
   };
 
@@ -702,7 +707,7 @@ export function AdminSpacesPage() {
     setError('');
     try {
       const data = await espacioService.getAllEspacios();
-      const ordered = [...(data || [])].sort((a, b) => Number(b.id) - Number(a.id));
+      const ordered = [...(data?.views || [])].sort((a, b) => Number(b.id) - Number(a.id));
       setSpaces(ordered);
     } catch (err) {
       setError(err.message || 'No se pudieron cargar los espacios.');
