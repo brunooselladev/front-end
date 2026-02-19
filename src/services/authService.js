@@ -1,6 +1,6 @@
 ﻿import { apiFetch, USE_MOCKS } from './apiClient';
 import { mockStore } from '../mocks';
-import { withLatency } from './shared';
+import { fromUserDTO, normalizeEntityResponse, withLatency } from './shared';
 
 export const authService = {
   async login(credentials) {
@@ -14,31 +14,29 @@ export const authService = {
         method: 'POST',
         body: JSON.stringify(data),
       });
+      const entity = normalizeEntityResponse(apiResponse);
+      const roleMapping = { administrador: 'admin' };
+      const rawRole = String(entity?.role || '').toLowerCase();
+      const role = roleMapping[rawRole] || rawRole || null;
 
-      // Transformamos la respuesta real del backend para que coincida con la
-      // estructura que el frontend espera (basada en los mocks).
-      if (apiResponse.success && apiResponse.response) {
-        const backendUser = apiResponse.response;
+      const user = entity ? { ...fromUserDTO(entity), role } : null;
+      const token = entity?.token || apiResponse?.token || apiResponse?.data?.token || null;
 
-        // Mapeamos el rol "Administrador" a "admin" para que coincida con la config del frontend.
-        const roleMapping = {
-          administrador: 'admin',
-        };
-        const rawRole = (backendUser.role || '').toLowerCase();
-        const role = roleMapping[rawRole] || rawRole;
-
+      if (!user || !token) {
         return {
-          success: true,
-          message: apiResponse.message,
-          data: {
-            token: backendUser.token,
-            user: { ...backendUser, role, nombre: `${backendUser.name} ${backendUser.lastname}` },
-          },
+          success: false,
+          message: apiResponse?.message || 'Respuesta de login invalida',
         };
       }
 
-      // Si la respuesta no fue exitosa o no tiene la forma esperada, la devolvemos como está.
-      return apiResponse;
+      return {
+        success: true,
+        message: apiResponse?.message,
+        data: {
+          token,
+          user,
+        },
+      };
     }
 
     const authUsers = mockStore.read('authUsers');

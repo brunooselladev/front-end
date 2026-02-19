@@ -28,7 +28,7 @@ function SpaceForm({ initialValue, onSubmit, onCancel, isSaving }) {
     nombre: initialValue?.nombre || '',
     nationalId: initialValue?.nationalId || '',
     telefono: initialValue?.telefono || '',
-    tipoOrganizacion: initialValue?.tipoOrganizacion || 'comunitario',
+    tipoOrganizacion: initialValue?.tipoOrganizacion || tipoOrganizacionOptions[0],
     direccion: initialValue?.direccion || '',
     barrio: initialValue?.barrio || '',
     encargado: initialValue?.encargado || '',
@@ -45,7 +45,7 @@ function SpaceForm({ initialValue, onSubmit, onCancel, isSaving }) {
       nombre: initialValue?.nombre || '',
       nationalId: initialValue?.nationalId || '',
       telefono: initialValue?.telefono || '',
-      tipoOrganizacion: initialValue?.tipoOrganizacion || 'comunitario',
+      tipoOrganizacion: initialValue?.tipoOrganizacion || tipoOrganizacionOptions[0],
       direccion: initialValue?.direccion || '',
       barrio: initialValue?.barrio || '',
       encargado: initialValue?.encargado || '',
@@ -481,7 +481,7 @@ export function AdminNotificationsPage() {
             <p><strong>Email:</strong> {selectedUser.email || '-'}</p>
             <p><strong>DNI:</strong> {selectedUser.dni || '-'}</p>
             <p><strong>Telefono:</strong> {selectedUser.telefono || '-'}</p>
-            <p><strong>Direccion:</strong> {selectedUser.direccionResidencia || '-'}</p>
+            <p><strong>Direccion:</strong> {selectedUser.direccionResidencia || selectedUser.address || '-'}</p>
             {selectedUser.idEspacio ? (
               <p><strong>Espacio:</strong> {spacesMap.get(Number(selectedUser.idEspacio)) || `Espacio ${selectedUser.idEspacio}`}</p>
             ) : null}
@@ -507,6 +507,36 @@ export function AdminNotificationsActivitiesPage() {
   const [loading, setLoading] = useState(true);
   const [working, setWorking] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+
+  const getStatusMeta = (status) => {
+    const normalized = String(status || '').toLowerCase();
+
+    if (normalized === 'aprobada') {
+      return {
+        label: 'Aprobada',
+        color: '#166534',
+        background: '#dcfce7',
+        border: '#bbf7d0',
+      };
+    }
+
+    if (normalized === 'rechazada') {
+      return {
+        label: 'Rechazada',
+        color: '#b91c1c',
+        background: '#fee2e2',
+        border: '#fecaca',
+      };
+    }
+
+    return {
+      label: 'Pendiente de aprobación',
+      color: '#c2410c',
+      background: '#fff7ed',
+      border: '#fed7aa',
+    };
+  };
 
   const spacesMap = useMemo(() => {
     const map = new Map();
@@ -537,11 +567,14 @@ export function AdminNotificationsActivitiesPage() {
 
   const approve = async (id) => {
     setWorking(true);
+    setError('');
     try {
       await activitiesService.updateActivity(id, { isVerified: true });
+      setNotice('Actividad aprobada correctamente.');
       await loadData();
       if (selected && Number(selected.id) === Number(id)) setSelected(null);
     } catch (err) {
+      setNotice('');
       setError(err.message || 'No se pudo aprobar la actividad.');
     } finally {
       setWorking(false);
@@ -550,11 +583,14 @@ export function AdminNotificationsActivitiesPage() {
 
   const reject = async (id) => {
     setWorking(true);
+    setError('');
     try {
-      await activitiesService.deleteActivity(id);
+      await activitiesService.updateActivity(id, { status: 'Rechazada' });
+      setNotice('Actividad rechazada correctamente.');
       await loadData();
       if (selected && Number(selected.id) === Number(id)) setSelected(null);
     } catch (err) {
+      setNotice('');
       setError(err.message || 'No se pudo rechazar la actividad.');
     } finally {
       setWorking(false);
@@ -586,10 +622,18 @@ export function AdminNotificationsActivitiesPage() {
       <div style={{ borderBottom: '1px solid #e5e7eb', marginBottom: '24px' }} />
 
       {error ? <p className="error-text">{error}</p> : null}
+      {notice ? (
+        <p style={{ color: '#166534', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '10px 12px', marginBottom: '14px' }}>
+          {notice}
+        </p>
+      ) : null}
 
       {/* Lista de cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '800px', margin: '0 auto' }}>
         {activities.map((row) => (
+          (() => {
+            const statusMeta = getStatusMeta(row.status);
+            return (
           <div
             key={row.id}
             style={{
@@ -627,15 +671,15 @@ export function AdminNotificationsActivitiesPage() {
                   {spacesMap.get(Number(row.espacioId)) || `Espacio ${row.espacioId}`} · Hace 0 días
                 </p>
                 <span style={{
-                  background: '#fff7ed',
-                  color: '#c2410c',
-                  border: '1px solid #fed7aa',
+                  background: statusMeta.background,
+                  color: statusMeta.color,
+                  border: `1px solid ${statusMeta.border}`,
                   borderRadius: '999px',
                   fontSize: '12px',
                   fontWeight: '600',
                   padding: '2px 10px',
                 }}>
-                  Pendiente de aprobación
+                  {statusMeta.label}
                 </span>
               </div>
             </div>
@@ -670,6 +714,8 @@ export function AdminNotificationsActivitiesPage() {
               </button>
             </div>
           </div>
+            );
+          })()
         ))}
       </div>
 
@@ -685,6 +731,7 @@ export function AdminNotificationsActivitiesPage() {
             <p><strong>Espacio:</strong> {spacesMap.get(Number(selected.espacioId)) || `Espacio ${selected.espacioId}`}</p>
             <p><strong>Lugar:</strong> {selected.lugar || '-'}</p>
             <p><strong>Es fija:</strong> {boolLabel(selected.esFija)}</p>
+            <p><strong>Estado:</strong> {getStatusMeta(selected.status).label}</p>
           </div>
         ) : null}
       </Modal>
@@ -741,11 +788,12 @@ export function AdminSpacesPage() {
     try {
       if (editing?.id) {
         await espacioService.updateEspacio(editing.id, payload);
+        await loadData();
       } else {
         await espacioService.createEspacio(payload);
+        await loadData();
       }
       setEditing(null);
-      await loadData();
     } catch (err) {
       setError(err.message || 'No se pudo guardar el espacio.');
     } finally {
@@ -767,6 +815,11 @@ export function AdminSpacesPage() {
     } finally {
       setWorking(false);
     }
+  };
+
+  const editSpace = async (row) => {
+    setEditing(row);
+    setSelected(null);
   };
 
   const columns = [
@@ -827,7 +880,7 @@ export function AdminSpacesPage() {
         rows={filtered}
         actions={[
           { label: 'Ver', onClick: (row) => { setSelected(row); setEditing(null); } },
-          { label: 'Editar', onClick: (row) => { setEditing(row); setSelected(null); } },
+          { label: 'Editar', onClick: (row) => { editSpace(row); } },
           {
             label: 'Eliminar',
             className: 'btn-danger',

@@ -1,20 +1,20 @@
-﻿import { apiFetch, USE_MOCKS } from './apiClient';
+﻿import { USE_MOCKS } from './apiClient';
 import { mockStore } from '../mocks';
-import { withLatency } from './shared';
+import { unsupportedByContract, withLatency } from './shared';
 
 export const mensajeService = {
   async getAllMensajes() {
-    if (!USE_MOCKS) return apiFetch('/messages');
+    if (!USE_MOCKS) unsupportedByContract('Messages API no definida en Swagger');
     return withLatency(mockStore.read('mensajes'), 220);
   },
 
   async getMensajeById(id) {
-    if (!USE_MOCKS) return apiFetch(`/messages/${id}`);
+    if (!USE_MOCKS) unsupportedByContract('Messages API no definida en Swagger');
     return withLatency(mockStore.findById('mensajes', id), 220);
   },
 
   async getMensajesByChatId(chatId) {
-    if (!USE_MOCKS) return apiFetch(`/messages?chatId=${chatId}`);
+    if (!USE_MOCKS) unsupportedByContract('Messages API no definida en Swagger');
     return withLatency(
       mockStore.read('mensajes').filter((message) => Number(message.idChat) === Number(chatId)),
       220
@@ -32,7 +32,7 @@ export const mensajeService = {
   },
 
   async getMensajesByEmisor(emisorId) {
-    if (!USE_MOCKS) return apiFetch(`/messages?idEmisor=${emisorId}`);
+    if (!USE_MOCKS) unsupportedByContract('Messages API no definida en Swagger');
     return withLatency(
       mockStore.read('mensajes').filter((message) => Number(message.idEmisor) === Number(emisorId)),
       220
@@ -45,11 +45,7 @@ export const mensajeService = {
   },
 
   async enviarMensaje(payload) {
-    if (!USE_MOCKS)
-      return apiFetch('/messages', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
+    if (!USE_MOCKS) unsupportedByContract('Messages API no definida en Swagger');
     return withLatency(mockStore.insert('mensajes', payload), 220);
   },
 
@@ -58,19 +54,12 @@ export const mensajeService = {
   },
 
   async updateMensaje(id, patch) {
-    if (!USE_MOCKS)
-      return apiFetch(`/messages/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(patch),
-      });
+    if (!USE_MOCKS) unsupportedByContract('Messages API no definida en Swagger');
     return withLatency(mockStore.update('mensajes', id, patch), 220);
   },
 
   async deleteMensaje(id) {
-    if (!USE_MOCKS)
-      return apiFetch(`/messages/${id}`, {
-        method: 'DELETE',
-      });
+    if (!USE_MOCKS) unsupportedByContract('Messages API no definida en Swagger');
     return withLatency(mockStore.remove('mensajes', id), 220);
   },
 

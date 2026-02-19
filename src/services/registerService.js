@@ -1,6 +1,6 @@
 ﻿﻿import { apiFetch, USE_MOCKS } from './apiClient';
 import { mockStore } from '../mocks';
-import { withLatency } from './shared';
+import { normalizeEntityResponse, toUserDTO, toWorkspaceDTO, unsupportedByContract, withLatency } from './shared';
 
 const buildUserPayload = (role, payload) => ({
   role,
@@ -31,7 +31,7 @@ export const registerService = {
     if (!USE_MOCKS)
       return apiFetch('/user', {
         method: 'POST',
-        body: JSON.stringify({ ...efector, role: 'efector' }),
+        body: JSON.stringify(toUserDTO({ ...efector, role: 'Efector' })),
       });
 
     const user = mockStore.insert('users', buildUserPayload('efector', efector));
@@ -48,7 +48,7 @@ export const registerService = {
     if (!USE_MOCKS)
       return apiFetch('/user', {
         method: 'POST',
-        body: JSON.stringify({ ...agente, role: 'agente' }),
+        body: JSON.stringify(toUserDTO({ ...agente, role: 'agente' })),
       });
 
     const user = mockStore.insert('users', buildUserPayload('agente', agente));
@@ -65,7 +65,7 @@ export const registerService = {
     if (!USE_MOCKS)
       return apiFetch('/user', {
         method: 'POST',
-        body: JSON.stringify({ ...referente, role: 'referente' }),
+        body: JSON.stringify(toUserDTO({ ...referente, role: 'referente' })),
       });
 
     const user = mockStore.insert('users', buildUserPayload('referente', referente));
@@ -80,10 +80,30 @@ export const registerService = {
 
   async postUsmya(usmya) {
     if (!USE_MOCKS)
-      return apiFetch('/user', {
-        method: 'POST',
-        body: JSON.stringify({ ...usmya, role: 'usmya' }),
-      });
+      {
+        const nationalId = String(usmya.nationalId ?? usmya.dni ?? '').trim();
+        const fallbackEmail = nationalId ? `usmya.${nationalId}@mappa.local` : null;
+        const baseDto = toUserDTO({
+          ...usmya,
+          role: 'usmya',
+          lastname: usmya.lastname || usmya.apellido || 'Sin apellido',
+          phoneNumber: usmya.phoneNumber || usmya.telefono || '0',
+          email: usmya.email ?? fallbackEmail,
+          type: usmya.type ?? 'Usmya',
+        });
+
+        return apiFetch('/user', {
+          method: 'POST',
+          body: JSON.stringify({
+            ...baseDto,
+            direccionResidencia: usmya.direccionResidencia ?? null,
+            alias: usmya.alias ?? null,
+            generoAutoPercibido: usmya.generoAutoPercibido ?? null,
+            estadoCivil: usmya.estadoCivil ?? null,
+            obraSocial: usmya.obraSocial ?? null,
+          }),
+        });
+      }
 
     const user = mockStore.insert(
       'users',
@@ -110,16 +130,38 @@ export const registerService = {
     if (!USE_MOCKS) {
       const referenteResponse = await apiFetch('/user', {
         method: 'POST',
-        body: JSON.stringify({ ...referenteUsmya.referente, role: 'referente' }),
+        body: JSON.stringify(toUserDTO({ ...referenteUsmya.referente, role: 'referente' })),
       });
+
+      const referente = normalizeEntityResponse(referenteResponse);
+      const referenteId = referente?.uuid || referente?.id || null;
 
       const usmyaResponse = await apiFetch('/user', {
         method: 'POST',
         body: JSON.stringify({
-          ...referenteUsmya.usmya,
-          role: 'usmya',
-          creadoPor: referenteResponse?.response?.uuid || referenteResponse?.data?.id || 0,
-          password: 'Usmya2024*',
+          ...toUserDTO({
+            ...referenteUsmya.usmya,
+            nationalId:
+              referenteUsmya.usmya.nationalId ??
+              referenteUsmya.usmya.dni ??
+              referenteUsmya.usmya.usmyaDni,
+            role: 'usmya',
+            lastname: referenteUsmya.usmya.lastname || referenteUsmya.usmya.apellido || 'Sin apellido',
+            phoneNumber: referenteUsmya.usmya.phoneNumber || referenteUsmya.usmya.telefono || '0',
+            email:
+              referenteUsmya.usmya.email ??
+              (referenteUsmya.usmya.nationalId || referenteUsmya.usmya.dni || referenteUsmya.usmya.usmyaDni
+                ? `usmya.${referenteUsmya.usmya.nationalId || referenteUsmya.usmya.dni || referenteUsmya.usmya.usmyaDni}@mappa.local`
+                : null),
+            type: referenteUsmya.usmya.type ?? 'Usmya',
+            createdBy: referenteId,
+            password: 'Usmya2024*',
+          }),
+          direccionResidencia: referenteUsmya.usmya.direccionResidencia ?? null,
+          alias: referenteUsmya.usmya.alias ?? null,
+          generoAutoPercibido: referenteUsmya.usmya.generoAutoPercibido ?? null,
+          estadoCivil: referenteUsmya.usmya.estadoCivil ?? null,
+          obraSocial: referenteUsmya.usmya.obraSocial ?? null,
         }),
       });
 
@@ -162,17 +204,14 @@ export const registerService = {
     if (!USE_MOCKS)
       return apiFetch('/workspace', {
         method: 'POST',
-        body: JSON.stringify({
-          name: espacio.nombre || espacio.name,
-          nationalId: espacio.nationalId || '',
-          address: `${espacio.direccion || espacio.address || ''}, ${espacio.barrio || espacio.neighborhood || ''}`.trim().replace(/^,|,$/g, ''),          type: espacio.tipoOrganizacion || espacio.type,
-          phoneNumber: espacio.telefono || espacio.phoneNumber || null,
-          assignee: espacio.encargado || espacio.assignee || null,
-          categories: espacio.poblacionVinculada || espacio.categories || [],
-          hours: espacio.diasHorarios || espacio.hours || '',
-          mainActivity: espacio.actividadesPrincipales || espacio.mainActivity || '',
-          secondaryActivity: espacio.actividadesSecundarias || espacio.secondaryActivity || '',
-        }),
+        body: JSON.stringify(
+          toWorkspaceDTO({
+            ...espacio,
+            address: `${espacio.direccion || espacio.address || ''}, ${espacio.barrio || espacio.neighborhood || ''}`
+              .trim()
+              .replace(/^,|,$/g, ''),
+          })
+        ),
       });
 
     const entity = mockStore.insert('espacios', espacio);
@@ -180,11 +219,7 @@ export const registerService = {
   },
 
   async registerEspacioInMongo(espacio) {
-    if (!USE_MOCKS)
-      return apiFetch('/instituciones', {
-        method: 'POST',
-        body: JSON.stringify(espacio),
-      });
+    if (!USE_MOCKS) unsupportedByContract('Endpoint /instituciones no existe en Swagger');
 
     return this.registerEspacio(espacio);
   },

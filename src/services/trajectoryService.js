@@ -1,15 +1,15 @@
-﻿import { apiFetch, USE_MOCKS } from './apiClient';
+﻿import { USE_MOCKS } from './apiClient';
 import { mockStore } from '../mocks';
-import { withLatency } from './shared';
+import { unsupportedByContract, withLatency } from './shared';
 
 export const notasTrayectoriaService = {
   async getAll() {
-    if (!USE_MOCKS) return apiFetch('/notas-trayectoria');
+    if (!USE_MOCKS) unsupportedByContract('Trayectoria API no definida en Swagger');
     return withLatency(mockStore.read('notasTrayectoria'), 220);
   },
 
   async getNotasByIdUsmya(usmyaId) {
-    if (!USE_MOCKS) return apiFetch(`/notas-trayectoria?usmyaId=${usmyaId}`);
+    if (!USE_MOCKS) unsupportedByContract('Trayectoria API no definida en Swagger');
     return withLatency(
       mockStore.read('notasTrayectoria').filter((item) => Number(item.idUsmya) === Number(usmyaId)),
       220
@@ -17,7 +17,7 @@ export const notasTrayectoriaService = {
   },
 
   async getNotasByIdActor(actorId) {
-    if (!USE_MOCKS) return apiFetch(`/notas-trayectoria?actorId=${actorId}`);
+    if (!USE_MOCKS) unsupportedByContract('Trayectoria API no definida en Swagger');
     return withLatency(
       mockStore.read('notasTrayectoria').filter((item) => Number(item.idActor) === Number(actorId)),
       220
@@ -25,33 +25,22 @@ export const notasTrayectoriaService = {
   },
 
   async getById(id) {
-    if (!USE_MOCKS) return apiFetch(`/notas-trayectoria/${id}`);
+    if (!USE_MOCKS) unsupportedByContract('Trayectoria API no definida en Swagger');
     return withLatency(mockStore.findById('notasTrayectoria', id), 220);
   },
 
   async create(payload) {
-    if (!USE_MOCKS)
-      return apiFetch('/notas-trayectoria', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
+    if (!USE_MOCKS) unsupportedByContract('Trayectoria API no definida en Swagger');
     return withLatency(mockStore.insert('notasTrayectoria', payload), 220);
   },
 
   async update(id, patch) {
-    if (!USE_MOCKS)
-      return apiFetch(`/notas-trayectoria/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(patch),
-      });
+    if (!USE_MOCKS) unsupportedByContract('Trayectoria API no definida en Swagger');
     return withLatency(mockStore.update('notasTrayectoria', id, patch), 220);
   },
 
   async delete(id) {
-    if (!USE_MOCKS)
-      return apiFetch(`/notas-trayectoria/${id}`, {
-        method: 'DELETE',
-      });
+    if (!USE_MOCKS) unsupportedByContract('Trayectoria API no definida en Swagger');
     return withLatency(mockStore.remove('notasTrayectoria', id), 220);
   },
 

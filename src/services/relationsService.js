@@ -1,20 +1,20 @@
-﻿import { apiFetch, USE_MOCKS } from './apiClient';
+﻿import { USE_MOCKS } from './apiClient';
 import { mockStore } from '../mocks';
-import { withLatency } from './shared';
+import { unsupportedByContract, withLatency } from './shared';
 
 export const referenteUsmyaService = {
   async getAll() {
-    if (!USE_MOCKS) return apiFetch('/referente-usmya');
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(mockStore.read('referenteUsmya'), 220);
   },
 
   async getById(id) {
-    if (!USE_MOCKS) return apiFetch(`/referente-usmya/${id}`);
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(mockStore.findById('referenteUsmya', id), 220);
   },
 
   async getByIdReferente(idReferente) {
-    if (!USE_MOCKS) return apiFetch(`/referente-usmya?referenteId=${idReferente}`);
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(
       mockStore.read('referenteUsmya').filter((item) => Number(item.idReferente) === Number(idReferente)),
       220
@@ -22,33 +22,22 @@ export const referenteUsmyaService = {
   },
 
   async create(payload) {
-    if (!USE_MOCKS)
-      return apiFetch('/referente-usmya', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(mockStore.insert('referenteUsmya', payload), 220);
   },
 
   async update(id, patch) {
-    if (!USE_MOCKS)
-      return apiFetch(`/referente-usmya/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(patch),
-      });
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(mockStore.update('referenteUsmya', id, patch), 220);
   },
 
   async delete(id) {
-    if (!USE_MOCKS)
-      return apiFetch(`/referente-usmya/${id}`, {
-        method: 'DELETE',
-      });
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(mockStore.remove('referenteUsmya', id), 220);
   },
 
   async getByIdEfector(idUsmya) {
-    if (!USE_MOCKS) return apiFetch(`/referente-usmya?usmyaId=${idUsmya}`);
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(
       mockStore.read('referenteUsmya').filter((item) => Number(item.idUsmya) === Number(idUsmya)),
       220
@@ -58,12 +47,12 @@ export const referenteUsmyaService = {
 
 export const efectorUsmyaService = {
   async getAll() {
-    if (!USE_MOCKS) return apiFetch('/efector-usmya');
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(mockStore.read('efectorUsmya'), 220);
   },
 
   async getByUsmyaId(usmyaId) {
-    if (!USE_MOCKS) return apiFetch(`/efector-usmya?usmyaId=${usmyaId}`);
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(
       mockStore.read('efectorUsmya').filter((item) => Number(item.idUsmya) === Number(usmyaId)),
       220
@@ -71,7 +60,7 @@ export const efectorUsmyaService = {
   },
 
   async getByEfectorId(efectorId) {
-    if (!USE_MOCKS) return apiFetch(`/efector-usmya?efectorId=${efectorId}`);
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(
       mockStore.read('efectorUsmya').filter((item) => Number(item.idEfector) === Number(efectorId)),
       220
@@ -86,19 +75,12 @@ export const efectorUsmyaService = {
   },
 
   async create(payload) {
-    if (!USE_MOCKS)
-      return apiFetch('/efector-usmya', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(mockStore.insert('efectorUsmya', payload), 220);
   },
 
   async delete(id) {
-    if (!USE_MOCKS)
-      return apiFetch(`/efector-usmya/${id}`, {
-        method: 'DELETE',
-      });
+    if (!USE_MOCKS) unsupportedByContract('Relaciones API no definida en Swagger');
     return withLatency(mockStore.remove('efectorUsmya', id), 220);
   },
 

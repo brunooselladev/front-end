@@ -9,8 +9,31 @@ const envValue = (key, fallback) => {
 export const API_BASE_URL = '/api';
 export const USE_MOCKS = String(envValue('VITE_USE_MOCKS', 'false')).toLowerCase() !== 'false';
 
+const normalizeToken = (token) => {
+  const value = String(token || '').trim();
+  if (!value) return null;
+  return value.toLowerCase().startsWith('bearer ') ? value.slice(7).trim() : value;
+};
+
+const readPersistedToken = () => {
+  const direct = normalizeToken(localStorage.getItem('jwtToken'));
+  if (direct) return direct;
+
+  try {
+    const persisted = JSON.parse(localStorage.getItem('auth-storage') || '{}');
+    return normalizeToken(persisted?.state?.token);
+  } catch {
+    return null;
+  }
+};
+
+const resolveAuthToken = () => {
+  const storeToken = normalizeToken(useAuthStore.getState().token);
+  return storeToken || readPersistedToken();
+};
+
 export async function apiFetch(path, options = {}) {
-  const token = useAuthStore.getState().token;
+  const token = resolveAuthToken();
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers || {}),
@@ -20,11 +43,26 @@ export async function apiFetch(path, options = {}) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const request = {
     credentials: 'include',
     headers,
     ...options,
-  });
+  };
+
+  let response = await fetch(`${API_BASE_URL}${path}`, request);
+
+  if (response.status === 401 && !headers.Authorization) {
+    const fallbackToken = readPersistedToken();
+    if (fallbackToken) {
+      response = await fetch(`${API_BASE_URL}${path}`, {
+        ...request,
+        headers: {
+          ...headers,
+          Authorization: `Bearer ${fallbackToken}`,
+        },
+      });
+    }
+  }
 
   let payload = null;
   try {
@@ -34,7 +72,11 @@ export async function apiFetch(path, options = {}) {
   }
 
   if (!response.ok) {
-    const message = payload?.message || `Request failed: ${response.status}`;
+    const message =
+      payload?.message ||
+      (response.status === 401
+        ? 'No autorizado (401). Verificá sesión/token para este usuario.'
+        : `Request failed: ${response.status}`);
     throw new Error(message);
   }
 

@@ -1,52 +1,55 @@
 ﻿﻿import { apiFetch, USE_MOCKS } from './apiClient';
 import { mockStore } from '../mocks';
-import { matchesSearch, withLatency } from './shared';
+import {
+  fromWorkspaceDTO,
+  matchesSearch,
+  normalizeEntityResponse,
+  normalizeListResponse,
+  toWorkspaceDTO,
+  toWorkspaceUpdateDTO,
+  withLatency,
+} from './shared';
 
 export const espacioService = {
   async getAllEspacios() {
     if (!USE_MOCKS) {
       const data = await apiFetch('/workspace?PageNumber=1&PageSize=100');
-      const views = data?.response?.views || data?.response?.items || data?.views || data?.items || [];
-
-      return views.map((item) => ({
-        id: item.uuid,
-        nombre: item.name,
-        telefono: item.phoneNumber,
-        direccion: item.address,
-        barrio: item.neighborhood ?? '',
-        encargado: item.assignee,
-        tipoOrganizacion: item.workspaceType,
-        cuentaConInternet: item.internet,
-        cuentaConDispositivo: item.device,
-        diasHorarios: item.hours,
-        actividadesPrincipales: item.mainActivity,
-        actividadesSecundarias: item.secondaryActivity,
-        poblacionVinculada: item.categories ?? [],
-      }));
+      return normalizeListResponse(data).map(fromWorkspaceDTO);
     }
     return withLatency(mockStore.read('espacios'), 300);
   },
 
   async getEspacioById(id) {
-    if (!USE_MOCKS) return apiFetch(`/workspace/${id}`);
+    if (!USE_MOCKS) {
+      const spaces = await this.getAllEspacios();
+      return spaces.find((item) => String(item.id) === String(id)) || null;
+    }
     return withLatency(mockStore.findById('espacios', id), 240);
   },
 
   async createEspacio(data) {
-    if (!USE_MOCKS)
-      return apiFetch('/workspace', {
+    if (!USE_MOCKS) {
+      const payload = toWorkspaceDTO(data);
+      const response = await apiFetch('/workspace', {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
+      const entity = normalizeEntityResponse(response);
+      return entity ? fromWorkspaceDTO(entity) : null;
+    }
     return withLatency(mockStore.insert('espacios', data), 260);
   },
 
   async updateEspacio(id, data) {
-    if (!USE_MOCKS)
-      return apiFetch(`/workspace/${id}`, {
+    if (!USE_MOCKS) {
+      const payload = toWorkspaceUpdateDTO(id, data);
+      const response = await apiFetch(`/workspace/${id}`, {
         method: 'PATCH',
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
+      const entity = normalizeEntityResponse(response);
+      return entity ? fromWorkspaceDTO(entity) : null;
+    }
     return withLatency(mockStore.update('espacios', id, data), 240);
   },
 
@@ -72,12 +75,18 @@ export const espacioService = {
   },
 
   async getEspaciosByBarrio(barrio) {
-    if (!USE_MOCKS) return apiFetch(`/espacios?barrio=${encodeURIComponent(barrio)}`);
+    if (!USE_MOCKS) {
+      const spaces = await this.getAllEspacios();
+      return spaces.filter((item) => matchesSearch(item.barrio, barrio));
+    }
     return withLatency(mockStore.read('espacios').filter((item) => matchesSearch(item.barrio, barrio)), 220);
   },
 
   async getEspaciosByPoblacion(poblacion) {
-    if (!USE_MOCKS) return apiFetch(`/espacios?poblacion=${encodeURIComponent(poblacion)}`);
+    if (!USE_MOCKS) {
+      const spaces = await this.getAllEspacios();
+      return spaces.filter((item) => (item.poblacionVinculada || []).includes(poblacion));
+    }
     return withLatency(
       mockStore.read('espacios').filter((item) => (item.poblacionVinculada || []).includes(poblacion)),
       220

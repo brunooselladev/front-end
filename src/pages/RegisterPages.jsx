@@ -1,9 +1,19 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+﻿﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { espacioService, registerService } from '../services';
 
 function RegisterWrapper({ title, subtitle, children }) {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate('/registro');
+  };
+
   return (
     <div className="auth-screen">
       <div className="auth-screen__background">
@@ -27,9 +37,9 @@ function RegisterWrapper({ title, subtitle, children }) {
           <div className="auth-card__glow" />
           <div className="auth-card__content">
             <header className="auth-card__header">
-              <Link className="auth-back-link" to="/login">
+              <button className="auth-back-link" type="button" onClick={handleBack}>
                 Volver
-              </Link>
+              </button>
               <h2>{title}</h2>
               {subtitle ? <p>{subtitle}</p> : null}
             </header>
@@ -67,16 +77,18 @@ function BasicPersonForm({ onSubmit, includeSpace = false, includeProfessional =
   const [error, setError] = useState('');
   const [ok, setOk] = useState('');
   const [form, setForm] = useState({
-    nombre: '',
+    name: '',
+    lastname: '',
+    nationalId: '',
     email: '',
-    telefono: '',
+    phoneNumber: '',
     idEspacio: '',
     tipoProfesional: '',
     password: '',
   });
 
   const canSubmit = useMemo(() => {
-    if (!form.nombre || !form.email || !form.telefono) return false;
+    if (!form.name || !form.lastname || !form.nationalId || !form.email || !form.phoneNumber) return false;
     if (includeSpace && !form.idEspacio) return false;
     if (includeProfessional && !form.tipoProfesional) return false;
     if (includePassword && !form.password) return false;
@@ -99,7 +111,6 @@ function BasicPersonForm({ onSubmit, includeSpace = false, includeProfessional =
     try {
       const payload = {
         ...form,
-        idEspacio: includeSpace ? Number(form.idEspacio) : null,
       };
       const response = await onSubmit(payload);
       setOk(response?.message || 'Registro exitoso');
@@ -115,8 +126,16 @@ function BasicPersonForm({ onSubmit, includeSpace = false, includeProfessional =
     <form onSubmit={submit} className="grid">
       <div className="form-grid">
         <div className="field">
-          <label>Nombre</label>
-          <input value={form.nombre} onChange={change('nombre')} />
+          <label>Nombre(s)</label>
+          <input value={form.name} onChange={change('name')} />
+        </div>
+        <div className="field">
+          <label>Apellido(s)</label>
+          <input value={form.lastname} onChange={change('lastname')} />
+        </div>
+        <div className="field">
+          <label>DNI/CUIT</label>
+          <input value={form.nationalId} onChange={change('nationalId')} />
         </div>
         <div className="field">
           <label>Email</label>
@@ -124,7 +143,7 @@ function BasicPersonForm({ onSubmit, includeSpace = false, includeProfessional =
         </div>
         <div className="field">
           <label>Teléfono</label>
-          <input value={form.telefono} onChange={change('telefono')} />
+          <input value={form.phoneNumber} onChange={change('phoneNumber')} />
         </div>
         {includeSpace ? (
           <div className="field">
@@ -234,7 +253,7 @@ export function OfferHelpPage() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
         <article className="card register-choice-card">
           <div className="register-choice-card__icon">
-            <img src="/assets/efector.svg" alt="Soy efector de salud" />
+            <img src="/assets/efector-salud.svg" alt="Soy efector de salud" />
           </div>
           <h3>Soy efector de salud</h3>
           <p>Profesional de la salud</p>
@@ -244,7 +263,7 @@ export function OfferHelpPage() {
         </article>
         <article className="card register-choice-card">
           <div className="register-choice-card__icon">
-            <img src="/assets/agente.svg" alt="Soy agente comunitario" />
+            <img src="/assets/agente-com.svg" alt="Soy agente comunitario" />
           </div>
           <h3>Soy agente comunitario</h3>
           <p>Trabajador comunitario</p>
@@ -254,7 +273,7 @@ export function OfferHelpPage() {
         </article>
         <article className="card register-choice-card">
           <div className="register-choice-card__icon">
-            <img src="/assets/referente.svg" alt="Soy referente afectivo" />
+            <img src="/assets/ref-afectivo.svg" alt="Soy referente afectivo" />
           </div>
           <h3>Soy referente afectivo</h3>
           <p>Apoyo emocional y afectivo</p>
@@ -264,7 +283,7 @@ export function OfferHelpPage() {
         </article>
         <article className="card register-choice-card">
           <div className="register-choice-card__icon">
-            <img src="/assets/institucion.svg" alt="Registrar mi institución" />
+            <img src="/assets/espacios.svg" alt="Registrar mi institución" />
           </div>
           <h3>Registrar mi institución</h3>
           <p>Completá la información de tu institución.</p>
@@ -285,13 +304,14 @@ export function EfectorSaludPage() {
         includeSpace
         onSubmit={(payload) =>
           registerService.postEfector({
-            nombre: payload.nombre,
+            name: payload.name,
+            lastname: payload.lastname,
+            nationalId: payload.nationalId,
             email: payload.email,
-            telefono: payload.telefono,
-            idEspacio: payload.idEspacio,
-            tipoProfesional: payload.tipoProfesional,
+            phoneNumber: payload.phoneNumber,
+            type: payload.tipoProfesional,
             password: payload.password,
-            esETratante: true,
+            role: 'efector',
           })
         }
       />
@@ -306,11 +326,13 @@ export function CommunityAgentPage() {
         includeSpace
         onSubmit={(payload) =>
           registerService.postAgente({
-            nombre: payload.nombre,
+            name: payload.name,
+            lastname: payload.lastname,
+            nationalId: payload.nationalId,
             email: payload.email,
-            telefono: payload.telefono,
-            idEspacio: payload.idEspacio,
+            phoneNumber: payload.phoneNumber,
             password: payload.password,
+            role: 'agente',
           })
         }
       />
@@ -324,11 +346,13 @@ export function AffectiveReferentPage() {
       <BasicPersonForm
         onSubmit={(payload) =>
           registerService.postReferente({
-            nombre: payload.nombre,
+            name: payload.name,
+            lastname: payload.lastname,
+            nationalId: payload.nationalId,
             email: payload.email,
-            telefono: payload.telefono,
+            phoneNumber: payload.phoneNumber,
             password: payload.password,
-            registroConUsmya: false,
+            role: 'referente',
           })
         }
       />
@@ -343,10 +367,11 @@ export function NeedHelpUsmyaPage() {
   const [ok, setOk] = useState('');
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
-    nombre: '',
-    dni: '',
-    fechaNacimiento: '',
-    telefono: '',
+    name: '',
+    lastname: '',
+    nationalId: '',
+    birthdate: '',
+    phoneNumber: '',
     direccionResidencia: '',
     alias: '',
     generoAutoPercibido: '',
@@ -366,10 +391,11 @@ export function NeedHelpUsmyaPage() {
   const change = (key) => (event) => setForm((prev) => ({ ...prev, [key]: event.target.value }));
 
   const canContinueStep1 =
-    form.nombre.trim() &&
-    form.dni.trim() &&
-    form.fechaNacimiento.trim() &&
-    form.telefono.trim();
+    form.name.trim() &&
+    form.lastname.trim() &&
+    form.nationalId.trim() &&
+    form.birthdate.trim() &&
+    form.phoneNumber.trim();
 
   const handleNextStep1 = (e) => {
     e.preventDefault();
@@ -393,8 +419,8 @@ export function NeedHelpUsmyaPage() {
     setError('');
     setOk('');
 
-    if (!form.nombre || !form.dni || !form.fechaNacimiento || !form.telefono) {
-      setError('Completá nombre, DNI, fecha de nacimiento y teléfono.');
+    if (!canContinueStep1) {
+      setError('Por favor, regresa y completa todos los campos obligatorios del paso 1.');
       return;
     }
 
@@ -406,17 +432,17 @@ export function NeedHelpUsmyaPage() {
     setIsLoading(true);
     try {
       const response = await registerService.postUsmya({
-        nombre: form.nombre,
-        dni: Number(form.dni),
-        fechaNacimiento: form.fechaNacimiento,
-        telefono: form.telefono,
+        name: form.name,
+        lastname: form.lastname,
+        nationalId: form.nationalId,
+        birthdate: form.birthdate,
+        phoneNumber: form.phoneNumber,
         direccionResidencia: form.direccionResidencia,
         alias: form.alias,
         generoAutoPercibido: form.generoAutoPercibido,
         estadoCivil: form.estadoCivil,
         obraSocial: form.obraSocial,
-        requiereAprobacion: true,
-        creadoPor: 0,
+        role: 'usmya',
         password: 'Usmya2024*',
       });
       setOk(response.message || 'USMYA registrado correctamente');
@@ -445,11 +471,20 @@ export function NeedHelpUsmyaPage() {
         <form onSubmit={handleNextStep1} className="grid">
           <div className="form-grid">
             <div className="field">
-              <label>Apellido y Nombre *</label>
+              <label>Nombre(s) *</label>
               <input
-                placeholder="Ej: Juan Pérez"
-                value={form.nombre}
-                onChange={change('nombre')}
+                placeholder="Ej: Juan"
+                value={form.name}
+                onChange={change('name')}
+                required
+              />
+            </div>
+            <div className="field">
+              <label>Apellido(s) *</label>
+              <input
+                placeholder="Ej: Pérez"
+                value={form.lastname}
+                onChange={change('lastname')}
                 required
               />
             </div>
@@ -457,8 +492,8 @@ export function NeedHelpUsmyaPage() {
               <label>D.N.I. *</label>
               <input
                 placeholder="Solo números"
-                value={form.dni}
-                onChange={change('dni')}
+                value={form.nationalId}
+                onChange={change('nationalId')}
                 required
                 inputMode="numeric"
               />
@@ -467,8 +502,8 @@ export function NeedHelpUsmyaPage() {
               <label>Fecha de nacimiento *</label>
               <input
                 type="date"
-                value={form.fechaNacimiento}
-                onChange={change('fechaNacimiento')}
+                value={form.birthdate}
+                onChange={change('birthdate')}
                 required
               />
             </div>
@@ -476,8 +511,8 @@ export function NeedHelpUsmyaPage() {
               <label>Número de contacto *</label>
               <input
                 placeholder="351xxxxxxxx"
-                value={form.telefono}
-                onChange={change('telefono')}
+                value={form.phoneNumber}
+                onChange={change('phoneNumber')}
                 required
                 inputMode="tel"
               />
@@ -586,10 +621,13 @@ export function NeedHelpOtherPage() {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     referenteNombre: '',
+    referenteLastname: '',
+    referenteNationalId: '',
     referenteEmail: '',
     referenteTelefono: '',
     referentePassword: '',
     usmyaNombre: '',
+    usmyaLastname: '',
     usmyaDni: '',
     usmyaTelefono: '',
     usmyaFechaNacimiento: '',
@@ -602,6 +640,8 @@ export function NeedHelpOtherPage() {
 
   const canContinueStep1 =
     form.referenteNombre.trim() &&
+    form.referenteLastname.trim() &&
+    form.referenteNationalId.trim() &&
     form.referenteEmail.trim() &&
     form.referenteTelefono.trim() &&
     form.referentePassword.trim();
@@ -628,12 +668,12 @@ export function NeedHelpOtherPage() {
     setError('');
     setOk('');
 
-    if (!form.referenteNombre || !form.referenteEmail || !form.referenteTelefono || !form.referentePassword) {
+    if (!canContinueStep1) {
       setError('Completá todos los datos del referente.');
       return;
     }
 
-    if (!form.usmyaNombre || !form.usmyaDni) {
+    if (!form.usmyaNombre || !form.usmyaLastname || !form.usmyaDni) {
       setError('Completá al menos el nombre y DNI del USMYA.');
       return;
     }
@@ -643,17 +683,22 @@ export function NeedHelpOtherPage() {
     try {
       const response = await registerService.postEfectorUsmya({
         referente: {
-          nombre: form.referenteNombre,
+          name: form.referenteNombre,
+          lastname: form.referenteLastname,
+          nationalId: form.referenteNationalId,
           email: form.referenteEmail,
-          telefono: form.referenteTelefono,
+          phoneNumber: form.referenteTelefono,
           password: form.referentePassword,
-          registroConUsmya: true,
+          role: 'referente',
         },
         usmya: {
-          nombre: form.usmyaNombre,
-          dni: Number(form.usmyaDni),
-          telefono: form.usmyaTelefono,
-          fechaNacimiento: form.usmyaFechaNacimiento,
+          name: form.usmyaNombre,
+          lastname: form.usmyaLastname,
+          nationalId: form.usmyaDni,
+          phoneNumber: form.usmyaTelefono,
+          birthdate: form.usmyaFechaNacimiento,
+          role: 'usmya',
+          password: 'Usmya2024*', // Se asigna una contraseña por defecto
         },
       });
 
@@ -683,11 +728,29 @@ export function NeedHelpOtherPage() {
         <form onSubmit={handleNextStep1} className="grid">
           <div className="form-grid">
             <div className="field">
-              <label>Nombre del referente *</label>
+              <label>Nombre(s) del referente *</label>
               <input
-                placeholder="Ej: Juan Pérez"
+                placeholder="Ej: Juan"
                 value={form.referenteNombre}
                 onChange={change('referenteNombre')}
+                required
+              />
+            </div>
+            <div className="field">
+              <label>Apellido(s) del referente *</label>
+              <input
+                placeholder="Ej: Pérez"
+                value={form.referenteLastname}
+                onChange={change('referenteLastname')}
+                required
+              />
+            </div>
+            <div className="field">
+              <label>DNI/CUIT del referente *</label>
+              <input
+                placeholder="Solo números"
+                value={form.referenteNationalId}
+                onChange={change('referenteNationalId')}
                 required
               />
             </div>
@@ -737,11 +800,20 @@ export function NeedHelpOtherPage() {
         <form onSubmit={onSubmit}>
           <div className="form-grid">
             <div className="field">
-              <label>Nombre del USMYA *</label>
+              <label>Nombre(s) del USMYA *</label>
               <input
-                placeholder="Ej: María García"
+                placeholder="Ej: María"
                 value={form.usmyaNombre}
                 onChange={change('usmyaNombre')}
+                required
+              />
+            </div>
+            <div className="field">
+              <label>Apellido(s) del USMYA *</label>
+              <input
+                placeholder="Ej: García"
+                value={form.usmyaLastname}
+                onChange={change('usmyaLastname')}
                 required
               />
             </div>
@@ -1271,4 +1343,3 @@ export function SpaceRegisterPage() {
     </RegisterWrapper>
   );
 }
-

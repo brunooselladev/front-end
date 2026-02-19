@@ -266,8 +266,11 @@ export function ProfileSpacePage() {
         espacioService.getEspacioById(currentUser.idEspacio),
         activitiesService.getActivitiesByEspacioId(currentUser.idEspacio),
       ]);
+      const visibleActivities = (spaceActivities || []).filter(
+        (item) => String(item.status || '').toLowerCase() !== 'rechazada'
+      );
       setSpace(spaceData);
-      setActivities(spaceActivities || []);
+      setActivities(visibleActivities);
       setSpaceForm({
         nombre: spaceData?.nombre || '',
         telefono: spaceData?.telefono || '',
@@ -346,8 +349,9 @@ export function ProfileSpacePage() {
   const removeActivity = async () => {
     if (!deleteActivity?.id) return;
     setSaving(true);
+    setError('');
     try {
-      await activitiesService.deleteActivity(deleteActivity.id);
+      await activitiesService.updateActivity(deleteActivity.id, { status: 'Rechazada' });
       setDeleteActivity(null);
       await loadData();
     } catch (err) {

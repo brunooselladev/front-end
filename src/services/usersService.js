@@ -1,30 +1,42 @@
 ﻿import { apiFetch, USE_MOCKS } from './apiClient';
 import { mockStore } from '../mocks';
-import { matchesSearch, withLatency } from './shared';
+import {
+  fromUserDTO,
+  matchesSearch,
+  normalizeEntityResponse,
+  normalizeListResponse,
+  toUserDTO,
+  unsupportedByContract,
+  withLatency,
+} from './shared';
 
 export const usuarioService = {
   async getAllUsers() {
     if (!USE_MOCKS) {
       const data = await apiFetch('/user?pageNumber=1&pageSize=100');
-      return data?.response?.items || data?.response || data || [];
+      return normalizeListResponse(data).map(fromUserDTO);
     }
     return withLatency(mockStore.read('users'), 350);
   },
 
   async getUsersPendingApproval() {
     if (!USE_MOCKS) {
-      const data = await apiFetch('/user?pageNumber=1&pageSize=100');
-      const views = data?.response?.views || [];
+      const data = await apiFetch('/user?Status=Pendiente&pageNumber=1&pageSize=100');
+      const views = normalizeListResponse(data);
       return views
-        .filter((u) => u.status === 'Pendiente')
+        .map(fromUserDTO)
+        .filter((u) => String(u.status || '').toLowerCase() === 'pendiente')
         .map((u) => ({
-          id: u.uuid,
+          id: u.id,
           nombre: `${u.name} ${u.lastname}`,
           email: u.email,
           dni: u.nationalId,
           telefono: u.phoneNumber,
-          role: u.role?.toLowerCase(),     
-          roleOriginal: u.role,            
+          direccionResidencia: u.direccionResidencia ?? u.address ?? null,
+          idEspacio: u.idEspacio ?? null,
+          creadoPor: u.creadoPor ?? null,
+          role: u.role?.toLowerCase(),
+          roleOriginal: u.role,
           status: u.status,
           registeredDate: u.registeredDate,
         }));
@@ -33,17 +45,25 @@ export const usuarioService = {
   },
   
   async getUsersByRole(role) {
-    if (!USE_MOCKS) return apiFetch(`/user?Role=${encodeURIComponent(role)}`);
+    if (!USE_MOCKS) {
+      const data = await apiFetch(`/user?Role=${encodeURIComponent(role)}&pageNumber=1&pageSize=100`);
+      return normalizeListResponse(data).map(fromUserDTO);
+    }
     return withLatency(mockStore.read('users').filter((u) => u.role === role), 350);
   },
 
   async getUserById(id) {
-    if (!USE_MOCKS) return apiFetch(`/user/${id}`);
+    if (!USE_MOCKS) {
+      const data = await apiFetch(`/user/${id}`);
+      return fromUserDTO(normalizeEntityResponse(data));
+    }
     return withLatency(mockStore.findById('users', id), 220);
   },
 
   async getUsmyaByReferenteId(referenteId) {
-    if (!USE_MOCKS) return apiFetch(`/users/usmya/by-referente/${referenteId}`);
+    if (!USE_MOCKS) {
+      unsupportedByContract('Relacion Referente-USMYA no definida en Swagger');
+    }
     const item = mockStore
       .read('users')
       .find((u) => u.role === 'usmya' && Number(u.creadoPor) === Number(referenteId));
@@ -51,7 +71,9 @@ export const usuarioService = {
   },
 
   async referenteHasUsmya(referenteId) {
-    if (!USE_MOCKS) return apiFetch(`/users/referentes/${referenteId}/has-usmya`);
+    if (!USE_MOCKS) {
+      unsupportedByContract('Relacion Referente-USMYA no definida en Swagger');
+    }
     const has = mockStore
       .read('users')
       .some((u) => u.role === 'usmya' && Number(u.creadoPor) === Number(referenteId));
@@ -59,7 +81,9 @@ export const usuarioService = {
   },
 
   async getCreadorByUsmyaId(usmyaId) {
-    if (!USE_MOCKS) return apiFetch(`/users/usmya/${usmyaId}/creador`);
+    if (!USE_MOCKS) {
+      unsupportedByContract('Relacion USMYA-creador no definida en Swagger');
+    }
     const usmya = mockStore
       .read('users')
       .find((u) => u.role === 'usmya' && Number(u.id) === Number(usmyaId));
@@ -68,7 +92,9 @@ export const usuarioService = {
   },
 
   async usmyaHasCreador(usmyaId) {
-    if (!USE_MOCKS) return apiFetch(`/users/usmya/${usmyaId}/has-creador`);
+    if (!USE_MOCKS) {
+      unsupportedByContract('Relacion USMYA-creador no definida en Swagger');
+    }
     const usmya = mockStore
       .read('users')
       .find((u) => u.role === 'usmya' && Number(u.id) === Number(usmyaId));
@@ -91,8 +117,8 @@ export const usuarioService = {
 
   async rejectUser(userId) {
     if (!USE_MOCKS)
-      return apiFetch(`/user/${userId}/reject`, {
-        method: 'PATCH',
+      return apiFetch(`/user/${userId}`, {
+        method: 'DELETE',
       });
     mockStore.remove('users', userId);
     return withLatency(true, 220);
@@ -102,7 +128,7 @@ export const usuarioService = {
     if (!USE_MOCKS)
       return apiFetch('/user', {
         method: 'POST',
-        body: JSON.stringify(userData),
+        body: JSON.stringify(toUserDTO(userData)),
       });
 
     const entity = mockStore.insert('users', {
@@ -133,19 +159,22 @@ export const usuarioService = {
   },
 
   async updateUser(userId, userData) {
-    if (!USE_MOCKS)
-      return apiFetch(`/user/${userId}`, {
-        method: 'PATCH',
-        body: JSON.stringify(userData),
-      });
+    if (!USE_MOCKS) unsupportedByContract('No existe PATCH /user/{uuid} en Swagger');
     return withLatency(mockStore.update('users', userId, userData), 220);
   },
 
   async searchAvailableUsmya(searchTerm, referenteId) {
-    if (!USE_MOCKS)
-      return apiFetch(
-        `/user/usmya/available?search=${encodeURIComponent(searchTerm || '')}&referenteId=${referenteId}`
-      );
+    if (!USE_MOCKS) {
+      const users = await this.getUsersByRole('usmya');
+      return users.filter((u) => {
+        if (!searchTerm) return true;
+        return (
+          matchesSearch(u.nombre, searchTerm) ||
+          matchesSearch(u.alias, searchTerm) ||
+          matchesSearch(u.dni, searchTerm)
+        );
+      });
+    }
 
     const relationships = mockStore.read('referenteUsmya');
     const relatedIds = relationships
@@ -168,10 +197,17 @@ export const usuarioService = {
   },
 
   async searchAvailableUsmyaForEfector(searchTerm, efectorId) {
-    if (!USE_MOCKS)
-      return apiFetch(
-        `/user/usmya/available-for-efector?search=${encodeURIComponent(searchTerm || '')}&efectorId=${efectorId}`
-      );
+    if (!USE_MOCKS) {
+      const users = await this.getUsersByRole('usmya');
+      return users.filter((u) => {
+        if (!searchTerm) return true;
+        return (
+          matchesSearch(u.nombre, searchTerm) ||
+          matchesSearch(u.alias, searchTerm) ||
+          matchesSearch(u.dni, searchTerm)
+        );
+      });
+    }
 
     const relationships = mockStore.read('efectorUsmya');
     const relatedIds = relationships

@@ -1,20 +1,20 @@
-﻿import { apiFetch, USE_MOCKS } from './apiClient';
+﻿import { USE_MOCKS } from './apiClient';
 import { mockStore } from '../mocks';
-import { withLatency } from './shared';
+import { unsupportedByContract, withLatency } from './shared';
 
 export const asistenciaService = {
   async getAllAsistencias() {
-    if (!USE_MOCKS) return apiFetch('/asistencias');
+    if (!USE_MOCKS) unsupportedByContract('Asistencia API no definida en Swagger');
     return withLatency(mockStore.read('asistencias'), 220);
   },
 
   async getAsistenciaById(id) {
-    if (!USE_MOCKS) return apiFetch(`/asistencias/${id}`);
+    if (!USE_MOCKS) unsupportedByContract('Asistencia API no definida en Swagger');
     return withLatency(mockStore.findById('asistencias', id), 220);
   },
 
   async getAsistenciasByActividadId(actividadId) {
-    if (!USE_MOCKS) return apiFetch(`/asistencias?actividadId=${actividadId}`);
+    if (!USE_MOCKS) unsupportedByContract('Asistencia API no definida en Swagger');
     return withLatency(
       mockStore.read('asistencias').filter((a) => Number(a.idActividad) === Number(actividadId)),
       220
@@ -22,20 +22,12 @@ export const asistenciaService = {
   },
 
   async createAsistencia(asistencia) {
-    if (!USE_MOCKS)
-      return apiFetch('/asistencias', {
-        method: 'POST',
-        body: JSON.stringify(asistencia),
-      });
+    if (!USE_MOCKS) unsupportedByContract('Asistencia API no definida en Swagger');
     return withLatency(mockStore.insert('asistencias', asistencia), 220);
   },
 
   async updateAsistencia(id, patch) {
-    if (!USE_MOCKS)
-      return apiFetch(`/asistencias/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(patch),
-      });
+    if (!USE_MOCKS) unsupportedByContract('Asistencia API no definida en Swagger');
     return withLatency(mockStore.update('asistencias', id, patch), 220);
   },
 
@@ -48,12 +40,12 @@ export const asistenciaService = {
   },
 
   async getAsistenciasByUser(idUser) {
-    if (!USE_MOCKS) return apiFetch(`/asistencias?idUser=${idUser}`);
+    if (!USE_MOCKS) unsupportedByContract('Asistencia API no definida en Swagger');
     return withLatency(mockStore.read('asistencias').filter((a) => Number(a.idUser) === Number(idUser)), 220);
   },
 
   async getAsistenciasByEstado(estado) {
-    if (!USE_MOCKS) return apiFetch(`/asistencias?estado=${estado}`);
+    if (!USE_MOCKS) unsupportedByContract('Asistencia API no definida en Swagger');
     return withLatency(mockStore.read('asistencias').filter((a) => a.estado === estado), 220);
   },
 
