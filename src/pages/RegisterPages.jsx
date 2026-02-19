@@ -127,23 +127,23 @@ function BasicPersonForm({ onSubmit, includeSpace = false, includeProfessional =
       <div className="form-grid">
         <div className="field">
           <label>Nombre(s)</label>
-          <input value={form.name} onChange={change('name')} />
+          <input value={form.name} onChange={change('name')} autoComplete="given-name" />
         </div>
         <div className="field">
           <label>Apellido(s)</label>
-          <input value={form.lastname} onChange={change('lastname')} />
+          <input value={form.lastname} onChange={change('lastname')} autoComplete="family-name" />
         </div>
         <div className="field">
           <label>DNI/CUIT</label>
-          <input value={form.nationalId} onChange={change('nationalId')} />
+          <input value={form.nationalId} onChange={change('nationalId')} autoComplete="off" />
         </div>
         <div className="field">
           <label>Email</label>
-          <input value={form.email} onChange={change('email')} />
+          <input value={form.email} onChange={change('email')} autoComplete="email" />
         </div>
         <div className="field">
           <label>Teléfono</label>
-          <input value={form.phoneNumber} onChange={change('phoneNumber')} />
+          <input value={form.phoneNumber} onChange={change('phoneNumber')} autoComplete="tel" />
         </div>
         {includeSpace ? (
           <div className="field">
@@ -161,13 +161,13 @@ function BasicPersonForm({ onSubmit, includeSpace = false, includeProfessional =
         {includeProfessional ? (
           <div className="field">
             <label>Tipo profesional</label>
-            <input value={form.tipoProfesional} onChange={change('tipoProfesional')} />
+            <input value={form.tipoProfesional} onChange={change('tipoProfesional')} autoComplete="organization-title" />
           </div>
         ) : null}
         {includePassword ? (
           <div className="field">
             <label>Contraseña</label>
-            <input type="password" value={form.password} onChange={change('password')} />
+            <input type="password" value={form.password} onChange={change('password')} autoComplete="new-password" />
           </div>
         ) : null}
       </div>
@@ -477,6 +477,7 @@ export function NeedHelpUsmyaPage() {
                 value={form.name}
                 onChange={change('name')}
                 required
+                autoComplete="given-name"
               />
             </div>
             <div className="field">
@@ -486,6 +487,7 @@ export function NeedHelpUsmyaPage() {
                 value={form.lastname}
                 onChange={change('lastname')}
                 required
+                autoComplete="family-name"
               />
             </div>
             <div className="field">
@@ -496,6 +498,7 @@ export function NeedHelpUsmyaPage() {
                 onChange={change('nationalId')}
                 required
                 inputMode="numeric"
+                autoComplete="off"
               />
             </div>
             <div className="field">
@@ -505,6 +508,7 @@ export function NeedHelpUsmyaPage() {
                 value={form.birthdate}
                 onChange={change('birthdate')}
                 required
+                autoComplete="bday"
               />
             </div>
             <div className="field">
@@ -515,6 +519,7 @@ export function NeedHelpUsmyaPage() {
                 onChange={change('phoneNumber')}
                 required
                 inputMode="tel"
+                autoComplete="tel"
               />
             </div>
           </div>
@@ -540,6 +545,7 @@ export function NeedHelpUsmyaPage() {
                 value={form.direccionResidencia}
                 onChange={change('direccionResidencia')}
                 maxLength={200}
+                autoComplete="street-address"
               />
             </div>
             <div className="field">
@@ -549,6 +555,7 @@ export function NeedHelpUsmyaPage() {
                 value={form.alias}
                 onChange={change('alias')}
                 maxLength={60}
+                autoComplete="nickname"
               />
             </div>
             <div className="field">
@@ -558,6 +565,7 @@ export function NeedHelpUsmyaPage() {
                 value={form.generoAutoPercibido}
                 onChange={change('generoAutoPercibido')}
                 maxLength={100}
+                autoComplete="off"
               />
             </div>
             <div className="field">
@@ -578,6 +586,7 @@ export function NeedHelpUsmyaPage() {
               value={form.obraSocial}
               onChange={change('obraSocial')}
               maxLength={100}
+              autoComplete="off"
             />
           </div>
 
@@ -734,6 +743,7 @@ export function NeedHelpOtherPage() {
                 value={form.referenteNombre}
                 onChange={change('referenteNombre')}
                 required
+                autoComplete="given-name"
               />
             </div>
             <div className="field">
@@ -743,6 +753,7 @@ export function NeedHelpOtherPage() {
                 value={form.referenteLastname}
                 onChange={change('referenteLastname')}
                 required
+                autoComplete="family-name"
               />
             </div>
             <div className="field">
@@ -752,6 +763,7 @@ export function NeedHelpOtherPage() {
                 value={form.referenteNationalId}
                 onChange={change('referenteNationalId')}
                 required
+                autoComplete="off"
               />
             </div>
             <div className="field">
@@ -762,6 +774,7 @@ export function NeedHelpOtherPage() {
                 value={form.referenteEmail}
                 onChange={change('referenteEmail')}
                 required
+                autoComplete="email"
               />
             </div>
             <div className="field">
@@ -771,6 +784,7 @@ export function NeedHelpOtherPage() {
                 value={form.referenteTelefono}
                 onChange={change('referenteTelefono')}
                 required
+                autoComplete="tel"
               />
             </div>
             <div className="field">
@@ -781,6 +795,7 @@ export function NeedHelpOtherPage() {
                 value={form.referentePassword}
                 onChange={change('referentePassword')}
                 required
+                autoComplete="new-password"
               />
             </div>
           </div>
@@ -806,6 +821,7 @@ export function NeedHelpOtherPage() {
                 value={form.usmyaNombre}
                 onChange={change('usmyaNombre')}
                 required
+                autoComplete="off"
               />
             </div>
             <div className="field">
@@ -815,6 +831,7 @@ export function NeedHelpOtherPage() {
                 value={form.usmyaLastname}
                 onChange={change('usmyaLastname')}
                 required
+                autoComplete="off"
               />
             </div>
             <div className="field">
@@ -825,6 +842,7 @@ export function NeedHelpOtherPage() {
                 onChange={change('usmyaDni')}
                 required
                 inputMode="numeric"
+                autoComplete="off"
               />
             </div>
             <div className="field">
@@ -833,6 +851,7 @@ export function NeedHelpOtherPage() {
                 placeholder="Ej: 351-987-6543"
                 value={form.usmyaTelefono}
                 onChange={change('usmyaTelefono')}
+                autoComplete="off"
               />
             </div>
             <div className="field">
@@ -841,6 +860,7 @@ export function NeedHelpOtherPage() {
                 type="date"
                 value={form.usmyaFechaNacimiento}
                 onChange={change('usmyaFechaNacimiento')}
+                autoComplete="off"
               />
             </div>
           </div>
@@ -1051,6 +1071,7 @@ export function SpaceRegisterPage() {
                 value={spaceForm.nombre}
                 onChange={changeSpace('nombre')}
                 required
+                autoComplete="organization"
               />
             </div>
             <div className="field">
@@ -1060,6 +1081,7 @@ export function SpaceRegisterPage() {
                 value={spaceForm.telefono}
                 onChange={changeSpace('telefono')}
                 required
+                autoComplete="tel"
               />
             </div>
             <div className="field">
@@ -1078,6 +1100,7 @@ export function SpaceRegisterPage() {
                 placeholder="Ej: Av. Colon 1234"
                 value={spaceForm.direccion}
                 onChange={changeSpace('direccion')}
+                autoComplete="street-address"
               />
             </div>
             <div className="field">
@@ -1086,6 +1109,7 @@ export function SpaceRegisterPage() {
                 placeholder="Ej: Centro"
                 value={spaceForm.barrio}
                 onChange={changeSpace('barrio')}
+                autoComplete="address-level2"
               />
             </div>
             <div className="field">
@@ -1095,6 +1119,7 @@ export function SpaceRegisterPage() {
                 value={spaceForm.encargado}
                 onChange={changeSpace('encargado')}
                 required
+                autoComplete="name"
               />
             </div>
           </div>
@@ -1105,6 +1130,7 @@ export function SpaceRegisterPage() {
               placeholder="Ej: Lunes a Viernes 9:00-18:00"
               value={spaceForm.diasHorarios}
               onChange={changeSpace('diasHorarios')}
+              autoComplete="off"
             />
           </div>
 
@@ -1205,6 +1231,7 @@ export function SpaceRegisterPage() {
                   placeholder="Ej: Taller de Arte, Clases de Matemáticas"
                   value={activityForm.nombre}
                   onChange={changeActivity('nombre')}
+                  autoComplete="off"
                 />
               </div>
             </div>
@@ -1254,6 +1281,7 @@ export function SpaceRegisterPage() {
                 placeholder="Ej: Lunes y Miércoles 14:00-16:00"
                 value={activityForm.diasHorarios}
                 onChange={changeActivity('diasHorarios')}
+                autoComplete="off"
               />
             </div>
 

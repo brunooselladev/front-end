@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import EntityTable from '../components/EntityTable';
 import LoadingOverlay from '../components/LoadingOverlay';
@@ -7,7 +7,7 @@ import PageShell from '../components/PageShell';
 import { activitiesService, espacioService, usuarioService } from '../services';
 import { boolLabel, formatDate, formatShortDate, roleLabel } from '../utils/formatters';
 import { startOfWeek, addDays, addWeeks, subWeeks, isSameDay, format, parseISO } from 'date-fns';
-import { de, es } from 'date-fns/locale';
+import { es } from 'date-fns/locale';
 
 const tipoOrganizacionOptions = [
   'Estatal',
