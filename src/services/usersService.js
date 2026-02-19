@@ -4,22 +4,41 @@ import { matchesSearch, withLatency } from './shared';
 
 export const usuarioService = {
   async getAllUsers() {
-    if (!USE_MOCKS) return apiFetch('/users');
+    if (!USE_MOCKS) {
+      const data = await apiFetch('/user?pageNumber=1&pageSize=100');
+      return data?.response?.items || data?.response || data || [];
+    }
     return withLatency(mockStore.read('users'), 350);
   },
 
   async getUsersPendingApproval() {
-    if (!USE_MOCKS) return apiFetch('/users?isVerified=pendiente');
+    if (!USE_MOCKS) {
+      const data = await apiFetch('/user?pageNumber=1&pageSize=100');
+      const views = data?.response?.views || [];
+      return views
+        .filter((u) => u.status === 'Pendiente')
+        .map((u) => ({
+          id: u.uuid,
+          nombre: `${u.name} ${u.lastname}`,
+          email: u.email,
+          dni: u.nationalId,
+          telefono: u.phoneNumber,
+          role: u.role?.toLowerCase(),     
+          roleOriginal: u.role,            
+          status: u.status,
+          registeredDate: u.registeredDate,
+        }));
+    }
     return withLatency(mockStore.read('users').filter((u) => u.isVerified === 'pendiente'), 350);
   },
-
+  
   async getUsersByRole(role) {
-    if (!USE_MOCKS) return apiFetch(`/users?role=${encodeURIComponent(role)}`);
+    if (!USE_MOCKS) return apiFetch(`/user?Role=${encodeURIComponent(role)}`);
     return withLatency(mockStore.read('users').filter((u) => u.role === role), 350);
   },
 
   async getUserById(id) {
-    if (!USE_MOCKS) return apiFetch(`/users/${id}`);
+    if (!USE_MOCKS) return apiFetch(`/user/${id}`);
     return withLatency(mockStore.findById('users', id), 220);
   },
 
@@ -56,22 +75,23 @@ export const usuarioService = {
     return withLatency(Boolean(usmya?.creadoPor), 220);
   },
 
-  async approveUser(userId) {
+  async approveUser(userId, role) {
     if (!USE_MOCKS)
-      return apiFetch(`/users/${userId}/approve`, {
+      return apiFetch(`/user/${userId}/role`, {
         method: 'PATCH',
+        body: JSON.stringify({ uuid: userId, role: role }),
       });
     mockStore.update('users', userId, { isVerified: 'aprobado' });
     return withLatency(true, 220);
   },
 
-  async postVerified(userId) {
-    return this.approveUser(userId);
+  async postVerified(userId, role) {
+    return this.approveUser(userId, role);
   },
 
   async rejectUser(userId) {
     if (!USE_MOCKS)
-      return apiFetch(`/users/${userId}/reject`, {
+      return apiFetch(`/user/${userId}/reject`, {
         method: 'PATCH',
       });
     mockStore.remove('users', userId);
@@ -80,7 +100,7 @@ export const usuarioService = {
 
   async createUser(userData) {
     if (!USE_MOCKS)
-      return apiFetch('/users', {
+      return apiFetch('/user', {
         method: 'POST',
         body: JSON.stringify(userData),
       });
@@ -114,7 +134,7 @@ export const usuarioService = {
 
   async updateUser(userId, userData) {
     if (!USE_MOCKS)
-      return apiFetch(`/users/${userId}`, {
+      return apiFetch(`/user/${userId}`, {
         method: 'PATCH',
         body: JSON.stringify(userData),
       });
@@ -124,7 +144,7 @@ export const usuarioService = {
   async searchAvailableUsmya(searchTerm, referenteId) {
     if (!USE_MOCKS)
       return apiFetch(
-        `/users/usmya/available?search=${encodeURIComponent(searchTerm || '')}&referenteId=${referenteId}`
+        `/user/usmya/available?search=${encodeURIComponent(searchTerm || '')}&referenteId=${referenteId}`
       );
 
     const relationships = mockStore.read('referenteUsmya');
@@ -150,7 +170,7 @@ export const usuarioService = {
   async searchAvailableUsmyaForEfector(searchTerm, efectorId) {
     if (!USE_MOCKS)
       return apiFetch(
-        `/users/usmya/available-for-efector?search=${encodeURIComponent(searchTerm || '')}&efectorId=${efectorId}`
+        `/user/usmya/available-for-efector?search=${encodeURIComponent(searchTerm || '')}&efectorId=${efectorId}`
       );
 
     const relationships = mockStore.read('efectorUsmya');
@@ -173,4 +193,3 @@ export const usuarioService = {
     return withLatency(filtered, 250);
   },
 };
-

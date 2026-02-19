@@ -811,16 +811,15 @@ export function NeedHelpOtherPage() {
 const poblacionVinculadaOptions = ['Niños', 'Adolescentes', 'Jóvenes', 'Adultos', 'Mayores', 'Familias', 'Otros'];
 
 const tipoOrganizacionOptions = [
-  'estatal',
-  'comunitario',
-  'educacion',
-  'merendero',
-  'comedor',
-  'deportiva',
-  'religiosa',
-  'centro vecinal',
-  'salud',
-  'otros',
+  'Estatal',
+  'Comunitario',
+  'Educacion',
+  'Merendero',
+  'Comedor',
+  'Deportiva',
+  'Religiosa',
+  'Centro vecinal',
+  'Otros',
 ];
 
 const confirmacionParticipacionOptions = [

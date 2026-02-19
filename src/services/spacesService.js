@@ -1,21 +1,40 @@
-﻿import { apiFetch, USE_MOCKS } from './apiClient';
+﻿﻿import { apiFetch, USE_MOCKS } from './apiClient';
 import { mockStore } from '../mocks';
 import { matchesSearch, withLatency } from './shared';
 
 export const espacioService = {
   async getAllEspacios() {
-    if (!USE_MOCKS) return apiFetch('/espacios');
+    if (!USE_MOCKS) {
+      const data = await apiFetch('/workspace?PageNumber=1&PageSize=100');
+      const views = data?.response?.views || data?.response?.items || data?.views || data?.items || [];
+
+      return views.map((item) => ({
+        id: item.uuid,
+        nombre: item.name,
+        telefono: item.phoneNumber,
+        direccion: item.address,
+        barrio: item.neighborhood ?? '',
+        encargado: item.assignee,
+        tipoOrganizacion: item.workspaceType,
+        cuentaConInternet: item.internet,
+        cuentaConDispositivo: item.device,
+        diasHorarios: item.hours,
+        actividadesPrincipales: item.mainActivity,
+        actividadesSecundarias: item.secondaryActivity,
+        poblacionVinculada: item.categories ?? [],
+      }));
+    }
     return withLatency(mockStore.read('espacios'), 300);
   },
 
   async getEspacioById(id) {
-    if (!USE_MOCKS) return apiFetch(`/espacios/${id}`);
+    if (!USE_MOCKS) return apiFetch(`/workspace/${id}`);
     return withLatency(mockStore.findById('espacios', id), 240);
   },
 
   async createEspacio(data) {
     if (!USE_MOCKS)
-      return apiFetch('/espacios', {
+      return apiFetch('/workspace', {
         method: 'POST',
         body: JSON.stringify(data),
       });
@@ -24,7 +43,7 @@ export const espacioService = {
 
   async updateEspacio(id, data) {
     if (!USE_MOCKS)
-      return apiFetch(`/espacios/${id}`, {
+      return apiFetch(`/workspace/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(data),
       });
@@ -33,14 +52,14 @@ export const espacioService = {
 
   async deleteEspacio(id) {
     if (!USE_MOCKS)
-      return apiFetch(`/espacios/${id}`, {
+      return apiFetch(`/workspace/${id}`, {
         method: 'DELETE',
       });
     return withLatency(mockStore.remove('espacios', id), 240);
   },
 
   async searchEspaciosByNombre(nombre) {
-    if (!USE_MOCKS) return apiFetch(`/espacios/search?nombre=${encodeURIComponent(nombre)}`);
+    if (!USE_MOCKS) return apiFetch(`/workspace?Name=${encodeURIComponent(nombre)}`);
     return withLatency(
       mockStore.read('espacios').filter((item) => matchesSearch(item.nombre, nombre)),
       220
@@ -48,7 +67,7 @@ export const espacioService = {
   },
 
   async getEspaciosByTipo(tipo) {
-    if (!USE_MOCKS) return apiFetch(`/espacios?tipoOrganizacion=${encodeURIComponent(tipo)}`);
+    if (!USE_MOCKS) return apiFetch(`/workspace?Type=${encodeURIComponent(tipo)}`);
     return withLatency(mockStore.read('espacios').filter((item) => item.tipoOrganizacion === tipo), 220);
   },
 
@@ -65,4 +84,3 @@ export const espacioService = {
     );
   },
 };
-

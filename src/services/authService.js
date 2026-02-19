@@ -10,10 +10,35 @@ export const authService = {
         : { email: arguments[0], password: arguments[1] };
 
     if (!USE_MOCKS) {
-      return apiFetch('/auth/login', {
+      const apiResponse = await apiFetch('/user/login', {
         method: 'POST',
         body: JSON.stringify(data),
       });
+
+      // Transformamos la respuesta real del backend para que coincida con la
+      // estructura que el frontend espera (basada en los mocks).
+      if (apiResponse.success && apiResponse.response) {
+        const backendUser = apiResponse.response;
+
+        // Mapeamos el rol "Administrador" a "admin" para que coincida con la config del frontend.
+        const roleMapping = {
+          administrador: 'admin',
+        };
+        const rawRole = (backendUser.role || '').toLowerCase();
+        const role = roleMapping[rawRole] || rawRole;
+
+        return {
+          success: true,
+          message: apiResponse.message,
+          data: {
+            token: backendUser.token,
+            user: { ...backendUser, role, nombre: `${backendUser.name} ${backendUser.lastname}` },
+          },
+        };
+      }
+
+      // Si la respuesta no fue exitosa o no tiene la forma esperada, la devolvemos como está.
+      return apiResponse;
     }
 
     const authUsers = mockStore.read('authUsers');
@@ -58,4 +83,3 @@ export const authService = {
     );
   },
 };
-

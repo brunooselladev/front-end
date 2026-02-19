@@ -7,18 +7,18 @@ import PageShell from '../components/PageShell';
 import { activitiesService, espacioService, usuarioService } from '../services';
 import { boolLabel, formatDate, formatShortDate, roleLabel } from '../utils/formatters';
 import { startOfWeek, addDays, addWeeks, subWeeks, isSameDay, format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { de, es } from 'date-fns/locale';
 
 const tipoOrganizacionOptions = [
-  'estatal',
-  'comunitario',
-  'educacion',
-  'merendero',
-  'comedor',
-  'deportiva',
-  'religiosa',
-  'centro vecinal',
-  'otros',
+  'Estatal',
+  'Comunitario',
+  'Educacion',
+  'Merendero',
+  'Comedor',
+  'Deportiva',
+  'Religiosa',
+  'Centro vecinal',
+  'Otros',
 ];
 
 const poblacionVinculadaOptions = ['Niños', 'Adolescentes', 'Jóvenes', 'Adultos', 'Mayores', 'Familias'];
@@ -93,6 +93,8 @@ function SpaceForm({ initialValue, onSubmit, onCancel, isSaving }) {
       hours: form.diasHorarios.trim(),
       mainActivity: form.actividadesPrincipales.trim(),
       secondaryActivity: form.actividadesSecundarias.trim(),
+      device: form.cuentaConDispositivo,
+      internet: form.cuentaConInternet,
     });
   };
 
@@ -281,9 +283,10 @@ export function AdminNotificationsPage() {
   const approveUser = async (userId) => {
     setWorking(true);
     try {
-      await usuarioService.postVerified(userId);
+      const user = users.find((u) => u.id === userId);
+      await usuarioService.postVerified(userId, user?.roleOriginal);
       await loadData();
-      if (selectedUser && Number(selectedUser.id) === Number(userId)) setSelectedUser(null);
+      if (selectedUser && selectedUser.id === userId) setSelectedUser(null);
     } catch (err) {
       setError(err.message || 'No se pudo aprobar el usuario.');
     } finally {
@@ -707,7 +710,9 @@ export function AdminSpacesPage() {
     setError('');
     try {
       const data = await espacioService.getAllEspacios();
-      const ordered = [...(data?.views || [])].sort((a, b) => Number(b.id) - Number(a.id));
+      const ordered = [...(data || [])].sort((a, b) => 
+        new Date(b.registeredDate) - new Date(a.registeredDate)
+      );      
       setSpaces(ordered);
     } catch (err) {
       setError(err.message || 'No se pudieron cargar los espacios.');

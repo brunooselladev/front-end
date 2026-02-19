@@ -1,25 +1,33 @@
-﻿import { apiFetch, USE_MOCKS } from './apiClient';
+﻿﻿import { apiFetch, USE_MOCKS } from './apiClient';
 import { mockStore } from '../mocks';
 import { dateOnly, matchesSearch, withLatency } from './shared';
 
 export const activitiesService = {
   async getAllActivities() {
-    if (!USE_MOCKS) return apiFetch('/actividades');
+    if (!USE_MOCKS) {
+      const data = await apiFetch('/activity?pageNumber=1&pageSize=100');
+      // The API might wrap the list in `response` or `response.items`.
+      // We also handle the case where it returns an array directly.
+      return data?.response?.items || data?.response || data || [];
+    }
     return withLatency(mockStore.read('actividades'), 300);
   },
 
   async getUnverifiedActivities() {
-    if (!USE_MOCKS) return apiFetch('/actividades?isVerified=false');
+    if (!USE_MOCKS) {
+      const data = await apiFetch('/activity?Status=pending&pageNumber=1&pageSize=100');
+      return data?.response?.items || data?.response || data || [];
+    }
     return withLatency(mockStore.read('actividades').filter((a) => !a.isVerified), 280);
   },
 
   async getActivityById(id) {
-    if (!USE_MOCKS) return apiFetch(`/actividades/${id}`);
+    if (!USE_MOCKS) return apiFetch(`/activity/${id}`);
     return withLatency(mockStore.findById('actividades', id), 220);
   },
 
   async getActivitiesByEspacioId(espacioId) {
-    if (!USE_MOCKS) return apiFetch(`/actividades?espacioId=${espacioId}`);
+    if (!USE_MOCKS) return apiFetch(`/activity?Workspace=${espacioId}`);
     return withLatency(
       mockStore.read('actividades').filter((a) => Number(a.espacioId) === Number(espacioId)),
       220
@@ -27,19 +35,19 @@ export const activitiesService = {
   },
 
   async getFixedActivities() {
-    if (!USE_MOCKS) return apiFetch('/actividades?esFija=true');
+    if (!USE_MOCKS) return apiFetch('/activity?fixed=true');
     return withLatency(mockStore.read('actividades').filter((a) => Boolean(a.esFija)), 220);
   },
 
   async getActivitiesByDate(date) {
     const dateValue = dateOnly(date);
-    if (!USE_MOCKS) return apiFetch(`/actividades?dia=${dateValue}`);
+    if (!USE_MOCKS) return apiFetch(`/activity?assignmentDate=${dateValue}`);
     return withLatency(mockStore.read('actividades').filter((a) => dateOnly(a.dia) === dateValue), 220);
   },
 
   async createActivity(payload) {
     if (!USE_MOCKS)
-      return apiFetch('/actividades', {
+      return apiFetch('/activity', {
         method: 'POST',
         body: JSON.stringify(payload),
       });
@@ -48,7 +56,7 @@ export const activitiesService = {
 
   async updateActivity(id, patch) {
     if (!USE_MOCKS)
-      return apiFetch(`/actividades/${id}`, {
+      return apiFetch('/activity', {
         method: 'PATCH',
         body: JSON.stringify(patch),
       });
@@ -57,14 +65,13 @@ export const activitiesService = {
 
   async deleteActivity(id) {
     if (!USE_MOCKS)
-      return apiFetch(`/actividades/${id}`, {
+      return apiFetch(`/activity/${id}`, {
         method: 'DELETE',
       });
     return withLatency(mockStore.remove('actividades', id), 220);
   },
 
   async getCurrentWeekActivities() {
-    if (!USE_MOCKS) return apiFetch('/actividades/current-week');
 
     const today = new Date();
     const day = today.getDay() === 0 ? 7 : today.getDay();
@@ -84,7 +91,7 @@ export const activitiesService = {
   },
 
   async searchActivities(query) {
-    if (!USE_MOCKS) return apiFetch(`/actividades/search?query=${encodeURIComponent(query)}`);
+    if (!USE_MOCKS) return apiFetch(`/activity/search?query=${encodeURIComponent(query)}`);
 
     return withLatency(
       mockStore
@@ -99,4 +106,3 @@ export const activitiesService = {
     );
   },
 };
-

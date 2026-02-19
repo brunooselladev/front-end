@@ -1,4 +1,4 @@
-﻿import { apiFetch, USE_MOCKS } from './apiClient';
+﻿﻿import { apiFetch, USE_MOCKS } from './apiClient';
 import { mockStore } from '../mocks';
 import { withLatency } from './shared';
 
@@ -22,15 +22,16 @@ const buildUserPayload = (role, payload) => ({
   esEfector: role === 'efector',
   esETratante: payload.esETratante || false,
   registroConUsmya: payload.registroConUsmya || false,
-  isVerified: 'pendiente',
+  isVerified: 'pending',
 });
 
 export const registerService = {
+  
   async postEfector(efector) {
     if (!USE_MOCKS)
-      return apiFetch('/register/efector', {
+      return apiFetch('/user', {
         method: 'POST',
-        body: JSON.stringify(efector),
+        body: JSON.stringify({ ...efector, role: 'efector' }),
       });
 
     const user = mockStore.insert('users', buildUserPayload('efector', efector));
@@ -45,9 +46,9 @@ export const registerService = {
 
   async postAgente(agente) {
     if (!USE_MOCKS)
-      return apiFetch('/register/agente', {
+      return apiFetch('/user', {
         method: 'POST',
-        body: JSON.stringify(agente),
+        body: JSON.stringify({ ...agente, role: 'agente' }),
       });
 
     const user = mockStore.insert('users', buildUserPayload('agente', agente));
@@ -62,9 +63,9 @@ export const registerService = {
 
   async postReferente(referente) {
     if (!USE_MOCKS)
-      return apiFetch('/register/referente', {
+      return apiFetch('/user', {
         method: 'POST',
-        body: JSON.stringify(referente),
+        body: JSON.stringify({ ...referente, role: 'referente' }),
       });
 
     const user = mockStore.insert('users', buildUserPayload('referente', referente));
@@ -79,9 +80,9 @@ export const registerService = {
 
   async postUsmya(usmya) {
     if (!USE_MOCKS)
-      return apiFetch('/register/usmya', {
+      return apiFetch('/user', {
         method: 'POST',
-        body: JSON.stringify(usmya),
+        body: JSON.stringify({ ...usmya, role: 'usmya' }),
       });
 
     const user = mockStore.insert(
@@ -101,16 +102,39 @@ export const registerService = {
     }
 
     return withLatency({ success: true, message: 'USMYA registrado exitosamente', data: user }, 450);
+
   },
 
   async postEfectorUsmya(referenteUsmya) {
-    if (!USE_MOCKS)
-      return apiFetch('/register/referente-usmya', {
+
+    if (!USE_MOCKS) {
+      const referenteResponse = await apiFetch('/user', {
         method: 'POST',
-        body: JSON.stringify(referenteUsmya),
+        body: JSON.stringify({ ...referenteUsmya.referente, role: 'referente' }),
       });
 
+      const usmyaResponse = await apiFetch('/user', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...referenteUsmya.usmya,
+          role: 'usmya',
+          creadoPor: referenteResponse?.response?.uuid || referenteResponse?.data?.id || 0,
+          password: 'Usmya2024*',
+        }),
+      });
+
+      return {
+        success: true,
+        message: 'Referente y USMYA registrados exitosamente',
+        data: {
+          referente: referenteResponse,
+          usmya: usmyaResponse,
+        },
+      };
+    }
+
     const referenteResponse = await this.postReferente(referenteUsmya.referente);
+
     const usmyaResponse = await this.postUsmya({
       ...referenteUsmya.usmya,
       creadoPor: referenteResponse.data.id,
@@ -136,9 +160,19 @@ export const registerService = {
 
   async registerEspacio(espacio) {
     if (!USE_MOCKS)
-      return apiFetch('/espacios', {
+      return apiFetch('/workspace', {
         method: 'POST',
-        body: JSON.stringify(espacio),
+        body: JSON.stringify({
+          name: espacio.nombre || espacio.name,
+          nationalId: espacio.nationalId || '',
+          address: `${espacio.direccion || espacio.address || ''}, ${espacio.barrio || espacio.neighborhood || ''}`.trim().replace(/^,|,$/g, ''),          type: espacio.tipoOrganizacion || espacio.type,
+          phoneNumber: espacio.telefono || espacio.phoneNumber || null,
+          assignee: espacio.encargado || espacio.assignee || null,
+          categories: espacio.poblacionVinculada || espacio.categories || [],
+          hours: espacio.diasHorarios || espacio.hours || '',
+          mainActivity: espacio.actividadesPrincipales || espacio.mainActivity || '',
+          secondaryActivity: espacio.actividadesSecundarias || espacio.secondaryActivity || '',
+        }),
       });
 
     const entity = mockStore.insert('espacios', espacio);
@@ -155,4 +189,3 @@ export const registerService = {
     return this.registerEspacio(espacio);
   },
 };
-
